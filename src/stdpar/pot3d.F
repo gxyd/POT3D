@@ -275,7 +275,7 @@ c-----------------------------------------------------------------------
 c ****** MPI variables, processor topology, and processor information.
 c-----------------------------------------------------------------------
 c
-      use mpi
+      ! use mpi
 c
       implicit none
 c
@@ -828,7 +828,7 @@ c ****** Magnetic energy diagnostics.
 c
       call magnetic_energy
 c
-      call MPI_Barrier(MPI_COMM_WORLD,ierr)
+      ! call MPI_Barrier(MPI_COMM_WORLD,ierr)
       call timer_off (t_wall)
 c
       call write_timing
@@ -870,22 +870,22 @@ c
 c
 c-----------------------------------------------------------------------
 c
-      namelist /topology/ nprocs,nr,nt,np,gpn
+      ! namelist /topology/ nprocs,nr,nt,np,gpn
 c
 c-----------------------------------------------------------------------
 c
-      namelist /inputvars/ r0,r1,fmt,
-     &                     drratio,dtratio,dpratio,
-     &                     rfrac,tfrac,pfrac,
-     &                     nfrmesh,nftmesh,nfpmesh,
-     &                     phishift,
-     &                     ifprec,ncgmax,ncghist,epscg,
-     &                     idebug,br0file,phifile,
-     &                     brfile,btfile,bpfile,br_photo_file,
-     &                     br_photo_original_file,
-     &                     option,
-     &                     do_not_balance_flux,hdf32,
-     &                     validation_run,dipole_angle
+!       namelist /inputvars/ r0,r1,fmt,
+!      &                     drratio,dtratio,dpratio,
+!      &                     rfrac,tfrac,pfrac,
+!      &                     nfrmesh,nftmesh,nfpmesh,
+!      &                     phishift,
+!      &                     ifprec,ncgmax,ncghist,epscg,
+!      &                     idebug,br0file,phifile,
+!      &                     brfile,btfile,bpfile,br_photo_file,
+!      &                     br_photo_original_file,
+!      &                     option,
+!      &                     do_not_balance_flux,hdf32,
+!      &                     validation_run,dipole_angle
 c
 c-----------------------------------------------------------------------
 c
@@ -908,9 +908,9 @@ c
         call endrun (.true.)
       end if
 c
-      read (8,topology)
+      ! read (8,topology)
 c
-      read (8,inputvars)
+      ! read (8,inputvars)
 c
       close (8)
 c
@@ -996,7 +996,7 @@ c-----------------------------------------------------------------------
 c
 c ****** Broadcast IERR0 to all processors.
 c
-      call MPI_Bcast (ierr0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+      ! call MPI_Bcast (ierr0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 c
 c ****** Call ENDRUN if IERR0 is non-zero.
 c
@@ -1081,21 +1081,21 @@ c
 c
 c-----------------------------------------------------------------------
 c
-      call MPI_Init_thread (MPI_THREAD_FUNNELED,tcheck,ierr)
+      ! call MPI_Init_thread (MPI_THREAD_FUNNELED,tcheck,ierr)
 c
 c ****** Get the total number of processors.
 c
-      call MPI_Comm_size (MPI_COMM_WORLD,nproc,ierr)
+      ! call MPI_Comm_size (MPI_COMM_WORLD,nproc,ierr)
 c
 c ****** Get the index (rank) of the local processor in
 c ****** communicator MPI_COMM_WORLD in variable IPROCW.
 c
-      call MPI_Comm_rank (MPI_COMM_WORLD,iprocw,ierr)
+      ! call MPI_Comm_rank (MPI_COMM_WORLD,iprocw,ierr)
 c
 c ****** Create a shared communicator for all ranks in the node.
 c
-      call MPI_Comm_split_type (MPI_COMM_WORLD,MPI_COMM_TYPE_SHARED,0,
-     &                          MPI_INFO_NULL,comm_shared,ierr)
+!       call MPI_Comm_split_type (MPI_COMM_WORLD,MPI_COMM_TYPE_SHARED,0,
+!      &                          MPI_INFO_NULL,comm_shared,ierr)
 c
 c ****** Get the total number of processors in node.
 c
@@ -1118,9 +1118,9 @@ c ****** Set the number type for communicating REAL
 c ****** numbers in MPI calls.
 c
       if (kind(def_real).eq.KIND_REAL_4) then
-        ntype_real=MPI_REAL4
+      !   ntype_real=MPI_REAL4
       else if (kind(def_real).eq.KIND_REAL_8) then
-        ntype_real=MPI_REAL8
+      !   ntype_real=MPI_REAL8
       else
         if (iamp0) then
           write (*,*)
@@ -1522,8 +1522,8 @@ c ****** Allow re-ordering in the Cartesian topology.
 c
       reorder=.true.
 c
-      call MPI_Cart_create (MPI_COMM_WORLD,ndim,nprocs,
-     &                      periodic,reorder,comm_all,ierr)
+!       call MPI_Cart_create (MPI_COMM_WORLD,ndim,nprocs,
+!      &                      periodic,reorder,comm_all,ierr)
 c
 c ****** Get the index (rank) of the local processor in
 c ****** communicator COMM_ALL in variable IPROC.
@@ -1543,7 +1543,7 @@ c
       if (iamp0) then
         iproc0=iproc
       end if
-      call MPI_Bcast (iproc0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+      ! call MPI_Bcast (iproc0,1,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 c
 c ****** Get the coordinate indices of this processor in the
 c ****** Cartesian MPI topology.
@@ -2144,8 +2144,8 @@ c
 c ****** Communicate among all processors.  After this call, all
 c ****** processors have the complete mapping information.
 c
-      call MPI_Allgather (sbuf,lbuf,MPI_INTEGER,
-     &                    rbuf,lbuf,MPI_INTEGER,comm_all,ierr)
+!       call MPI_Allgather (sbuf,lbuf,MPI_INTEGER,
+!      &                    rbuf,lbuf,MPI_INTEGER,comm_all,ierr)
 c
 c ****** Extract the mapping information from the buffer.
 c
@@ -6379,7 +6379,7 @@ c
       use global_dims
       use global_mesh
       use vars
-      use rdhdf_2d_interface
+      ! use rdhdf_2d_interface
 c
 c-----------------------------------------------------------------------
 c
