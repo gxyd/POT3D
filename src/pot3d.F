@@ -870,22 +870,22 @@ c
 c
 c-----------------------------------------------------------------------
 c
-      namelist /topology/ nprocs,nr,nt,np,gpn
+      ! namelist /topology/ nprocs,nr,nt,np,gpn
 c
 c-----------------------------------------------------------------------
 c
-      namelist /inputvars/ r0,r1,fmt,
-     &                     drratio,dtratio,dpratio,
-     &                     rfrac,tfrac,pfrac,
-     &                     nfrmesh,nftmesh,nfpmesh,
-     &                     phishift,
-     &                     ifprec,ncgmax,ncghist,epscg,
-     &                     idebug,br0file,phifile,
-     &                     brfile,btfile,bpfile,br_photo_file,
-     &                     br_photo_original_file,
-     &                     option,
-     &                     do_not_balance_flux,hdf32,
-     &                     validation_run,dipole_angle
+!       namelist /inputvars/ r0,r1,fmt,
+!      &                     drratio,dtratio,dpratio,
+!      &                     rfrac,tfrac,pfrac,
+!      &                     nfrmesh,nftmesh,nfpmesh,
+!      &                     phishift,
+!      &                     ifprec,ncgmax,ncghist,epscg,
+!      &                     idebug,br0file,phifile,
+!      &                     brfile,btfile,bpfile,br_photo_file,
+!      &                     br_photo_original_file,
+!      &                     option,
+!      &                     do_not_balance_flux,hdf32,
+!      &                     validation_run,dipole_angle
 c
 c-----------------------------------------------------------------------
 c
@@ -908,9 +908,9 @@ c
         call endrun (.true.)
       end if
 c
-      read (8,topology)
+      ! read (8,topology)
 c
-      read (8,inputvars)
+      ! read (8,inputvars)
 c
       close (8)
 c
