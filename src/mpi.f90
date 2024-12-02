@@ -17,5 +17,139 @@ module mpi
         function MPI_Wtime() result(time)
             real(kind=8) :: time
         end function
+
+        subroutine MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr) :: sendbuf(*), recvbuf(*)
+            integer :: count, datatype, op, comm, ierror
+        end subroutine
+
+        subroutine MPI_Barrier(comm, ierror)
+            integer :: comm, ierror
+        end subroutine
+
+        subroutine MPI_Bcast(buffer, count, datatype, root, comm, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr) :: buffer(*)
+            integer, intent(in) :: count, root
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Finalize(ierror)
+            integer, optional, intent(in) :: ierror
+        end subroutine
+
+        subroutine MPI_Init_thread(required, provided, ierror)
+            integer, intent(in) :: required
+            integer, intent(out) :: provided
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Comm_size(comm, size, ierror)
+            integer, intent(in) :: comm
+            integer, intent(out) :: size
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Comm_rank(comm, rank, ierror)
+            integer, intent(in) :: comm
+            integer, intent(out) :: rank
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Comm_split_type(comm, split_type, key, info, newcomm, ierror)
+            integer :: comm
+            integer, intent(in) :: split_type, key
+            integer, intent(in) :: info
+            integer, intent(out) :: newcomm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart, ierror)
+            integer, intent(in) :: comm_old
+            integer, intent(in) :: ndims
+            integer, intent(in) :: dims(ndims)
+            logical, intent(in) :: periods(ndims), reorder
+            integer, intent(out) :: comm_cart
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Cart_coords(comm, rank, maxdims, coords, ierror)
+            integer, intent(in) :: comm
+            integer, intent(in) :: rank, maxdims
+            integer, intent(out) :: coords(maxdims)
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Cart_shift(comm, direction, disp, rank_source, rank_dest, ierror)
+            integer, intent(in) :: comm
+            integer, intent(in) :: direction, disp
+            integer, intent(out) :: rank_source, rank_dest
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Cart_sub(comm, remain_dims, newcomm, ierror)
+            integer, intent(in) :: comm
+            logical, intent(in) :: remain_dims(*)
+            integer, intent(out) :: newcomm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in) :: sendbuf(*)
+            type(c_ptr) :: recvbuf
+            integer, intent(in) :: sendcount, recvcount
+            integer, intent(in) :: sendtype, recvtype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Isend(buf, count, datatype, dest, tag, comm, request, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in) :: buf
+            integer, intent(in) :: count, dest, tag
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, intent(out) :: request
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Recv(buf, count, datatype, source, tag, comm, status, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in) :: buf
+            integer, intent(in) :: count, source, tag
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer :: status
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Irecv(buf, count, datatype, source, tag, comm, request, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in) :: buf
+            integer, intent(in) :: count, source, tag
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, intent(out) :: request
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Waitall(count, array_of_requests, array_of_statuses, ierror)
+            integer, intent(in) :: count
+            integer, intent(inout) :: array_of_requests(count)
+            integer :: array_of_statuses(*)
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Ssend(buf, count, datatype, dest, tag, comm, ierror)
+            use, intrinsic :: iso_c_binding
+            type(c_ptr), intent(in) :: buf
+            integer, intent(in) :: count, dest, tag
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
     end interface
 end module
