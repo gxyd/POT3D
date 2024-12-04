@@ -10,7 +10,7 @@ module mpi
     integer, parameter :: MPI_IN_PLACE = 1
     integer, parameter :: MPI_SUM = 1
     integer, parameter :: MPI_PROC_NULL = -1
-    integer, parameter :: MPI_STATUSES_IGNORE = 0
+    integer, allocatable :: MPI_STATUSES_IGNORE(:)
     integer, parameter :: MPI_STATUS_IGNORE = 0
 
     interface
@@ -19,8 +19,8 @@ module mpi
         end function
 
         subroutine MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr) :: sendbuf(*), recvbuf(*)
+            type(*), dimension(..), intent(in) :: sendbuf
+            type(*), dimension(..) :: recvbuf
             integer :: count, datatype, op, comm, ierror
         end subroutine
 
@@ -29,8 +29,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Bcast(buffer, count, datatype, root, comm, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr) :: buffer(*)
+            type(*), dimension(..) :: buffer
             integer, intent(in) :: count, root
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -98,9 +97,8 @@ module mpi
         end subroutine
 
         subroutine MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr), intent(in) :: sendbuf(*)
-            type(c_ptr) :: recvbuf
+            type(*), dimension(..), intent(in), asynchronous :: sendbuf
+            type(*), dimension(..) :: recvbuf
             integer, intent(in) :: sendcount, recvcount
             integer, intent(in) :: sendtype, recvtype
             integer, intent(in) :: comm
@@ -108,8 +106,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Isend(buf, count, datatype, dest, tag, comm, request, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr), intent(in) :: buf
+            type(*), dimension(..), intent(in), asynchronous :: buf
             integer, intent(in) :: count, dest, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -118,8 +115,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Recv(buf, count, datatype, source, tag, comm, status, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr), intent(in) :: buf
+            type(*), dimension(..) :: buf
             integer, intent(in) :: count, source, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -128,8 +124,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Irecv(buf, count, datatype, source, tag, comm, request, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr), intent(in) :: buf
+            type(*), dimension(..), asynchronous :: buf
             integer, intent(in) :: count, source, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -145,9 +140,9 @@ module mpi
         end subroutine
 
         subroutine MPI_Ssend(buf, count, datatype, dest, tag, comm, ierror)
-            use, intrinsic :: iso_c_binding
-            type(c_ptr), intent(in) :: buf
+            type(*), dimension(..), intent(in) :: buf
             integer, intent(in) :: count, dest, tag
+            integer, intent(in) :: datatype
             integer, intent(in) :: comm
             integer, optional, intent(out) :: ierror
         end subroutine
