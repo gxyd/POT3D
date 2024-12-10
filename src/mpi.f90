@@ -7,11 +7,21 @@ module mpi
     integer, parameter :: MPI_REAL8 = 3
     integer, parameter :: MPI_THREAD_FUNNELED = 1
     integer, parameter :: MPI_INTEGER = 1
-    integer, parameter :: MPI_IN_PLACE = 1
+    real(8), parameter :: MPI_IN_PLACE = 1
     integer, parameter :: MPI_SUM = 1
     integer, parameter :: MPI_PROC_NULL = -1
     integer, allocatable :: MPI_STATUSES_IGNORE(:)
     integer, parameter :: MPI_STATUS_IGNORE = 0
+
+    interface MPI_Bcast
+        module procedure MPI_Bcast_int
+        module procedure MPI_Bcast_real
+    end interface
+
+    interface MPI_Allgather
+        module procedure MPI_Allgather_int
+        module procedure MPI_Allgather_real
+    end interface
 
     interface
         function MPI_Wtime() result(time)
@@ -19,21 +29,15 @@ module mpi
         end function
 
         subroutine MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
-            type(*), dimension(..), intent(in) :: sendbuf
-            type(*), dimension(..) :: recvbuf
+            ! type(*), dimension(..), intent(in) :: sendbuf
+            real(8), dimension(..), intent(in) :: sendbuf
+            ! type(*), dimension(..) :: recvbuf
+            real(8), dimension(..) :: recvbuf
             integer :: count, datatype, op, comm, ierror
         end subroutine
 
         subroutine MPI_Barrier(comm, ierror)
             integer :: comm, ierror
-        end subroutine
-
-        subroutine MPI_Bcast(buffer, count, datatype, root, comm, ierror)
-            type(*), dimension(..) :: buffer
-            integer, intent(in) :: count, root
-            integer, intent(in) :: datatype
-            integer, intent(in) :: comm
-            integer, optional, intent(out) :: ierror
         end subroutine
 
         subroutine MPI_Finalize(ierror)
@@ -96,17 +100,9 @@ module mpi
             integer, optional, intent(out) :: ierror
         end subroutine
 
-        subroutine MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-            type(*), dimension(..), intent(in), asynchronous :: sendbuf
-            type(*), dimension(..) :: recvbuf
-            integer, intent(in) :: sendcount, recvcount
-            integer, intent(in) :: sendtype, recvtype
-            integer, intent(in) :: comm
-            integer, optional, intent(out) :: ierror
-        end subroutine
-
         subroutine MPI_Isend(buf, count, datatype, dest, tag, comm, request, ierror)
-            type(*), dimension(..), intent(in), asynchronous :: buf
+            ! type(*), dimension(..), intent(in), asynchronous :: buf
+            real(8), dimension(..), intent(in) :: buf
             integer, intent(in) :: count, dest, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -115,7 +111,8 @@ module mpi
         end subroutine
 
         subroutine MPI_Recv(buf, count, datatype, source, tag, comm, status, ierror)
-            type(*), dimension(..) :: buf
+            ! type(*), dimension(..) :: buf
+            real(8), dimension(..) :: buf
             integer, intent(in) :: count, source, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -124,7 +121,8 @@ module mpi
         end subroutine
 
         subroutine MPI_Irecv(buf, count, datatype, source, tag, comm, request, ierror)
-            type(*), dimension(..), asynchronous :: buf
+            ! type(*), dimension(..), asynchronous :: buf
+            real(8), dimension(..) :: buf
             integer, intent(in) :: count, source, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -140,11 +138,52 @@ module mpi
         end subroutine
 
         subroutine MPI_Ssend(buf, count, datatype, dest, tag, comm, ierror)
-            type(*), dimension(..), intent(in) :: buf
+            ! type(*), dimension(..), intent(in) :: buf
+            real(8), dimension(..), intent(in) :: buf
             integer, intent(in) :: count, dest, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
             integer, optional, intent(out) :: ierror
         end subroutine
     end interface
+
+    contains
+        subroutine MPI_Bcast_int(buffer, count, datatype, root, comm, ierror)
+            ! type(*), dimension(..) :: buffer
+            integer, dimension(..) :: buffer
+            integer, intent(in) :: count, root
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Bcast_real(buffer, count, datatype, root, comm, ierror)
+            real(8), dimension(..) :: buffer
+            integer, intent(in) :: count, root
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Allgather_int(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
+            ! type(*), dimension(..), intent(in), asynchronous :: sendbuf
+            integer, dimension(..), intent(in) :: sendbuf
+            ! type(*), dimension(..) :: recvbuf
+            integer, dimension(..) :: recvbuf
+            integer, intent(in) :: sendcount, recvcount
+            integer, intent(in) :: sendtype, recvtype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Allgather_real(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
+            ! type(*), dimension(..), intent(in), asynchronous :: sendbuf
+            real(8), dimension(..), intent(in) :: sendbuf
+            ! type(*), dimension(..) :: recvbuf
+            real(8), dimension(..) :: recvbuf
+            integer, intent(in) :: sendcount, recvcount
+            integer, intent(in) :: sendtype, recvtype
+            integer, intent(in) :: comm
+            integer, optional, intent(out) :: ierror
+        end subroutine
 end module
