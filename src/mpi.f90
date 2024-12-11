@@ -150,7 +150,7 @@ module mpi
     contains
         subroutine MPI_Bcast_int(buffer, count, datatype, root, comm, ierror)
             ! type(*), dimension(..) :: buffer
-            integer, dimension(..) :: buffer
+            integer :: buffer
             integer, intent(in) :: count, root
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -158,7 +158,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Bcast_real(buffer, count, datatype, root, comm, ierror)
-            real(8), dimension(..) :: buffer
+            real(8), dimension(:, :) :: buffer
             integer, intent(in) :: count, root
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
@@ -167,9 +167,9 @@ module mpi
 
         subroutine MPI_Allgather_int(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
             ! type(*), dimension(..), intent(in), asynchronous :: sendbuf
-            integer, dimension(..), intent(in) :: sendbuf
+            integer, dimension(:), intent(in) :: sendbuf
             ! type(*), dimension(..) :: recvbuf
-            integer, dimension(..) :: recvbuf
+            integer, dimension(:, :) :: recvbuf
             integer, intent(in) :: sendcount, recvcount
             integer, intent(in) :: sendtype, recvtype
             integer, intent(in) :: comm
@@ -178,9 +178,9 @@ module mpi
 
         subroutine MPI_Allgather_real(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
             ! type(*), dimension(..), intent(in), asynchronous :: sendbuf
-            real(8), dimension(..), intent(in) :: sendbuf
+            real(8), dimension(:), intent(in) :: sendbuf
             ! type(*), dimension(..) :: recvbuf
-            real(8), dimension(..) :: recvbuf
+            real(8), dimension(:, :) :: recvbuf
             integer, intent(in) :: sendcount, recvcount
             integer, intent(in) :: sendtype, recvtype
             integer, intent(in) :: comm
