@@ -1183,10 +1183,10 @@ subroutine wrhdf_1d (fname,scale,nx,f,x,hdf32,ierr)
       if (scale) then
         s%scales(1)%f=>x
       else
-        nullify (s%scales(1)%f)
+        s%scales(1)%f => null()
       end if
-      nullify (s%scales(2)%f)
-      nullify (s%scales(3)%f)
+      s%scales(2)%f => null()
+      s%scales(3)%f => null()
       s%f=>f
 !
 ! ****** Write the data set.
@@ -1255,10 +1255,10 @@ subroutine wrhdf_2d (fname,scale,nx,ny,f,x,y,hdf32,ierr)
         s%scales(1)%f=>x
         s%scales(2)%f=>y
       else
-        nullify (s%scales(1)%f)
-        nullify (s%scales(2)%f)
+        s%scales(1)%f => null()
+        s%scales(2)%f => null()
       end if
-      nullify (s%scales(3)%f)
+      s%scales(3)%f => null()
       s%f=>f
 !
 ! ****** Write the data set.
@@ -1329,9 +1329,9 @@ subroutine wrhdf_3d (fname,scale,nx,ny,nz,f,x,y,z,hdf32,ierr)
         s%scales(2)%f=>y
         s%scales(3)%f=>z
       else
-        nullify (s%scales(1)%f)
-        nullify (s%scales(2)%f)
-        nullify (s%scales(3)%f)
+        s%scales(1)%f => null()
+        s%scales(2)%f => null()
+        s%scales(3)%f => null()
       end if
       s%f=>f
 !
