@@ -23,18 +23,44 @@ module mpi
         module procedure MPI_Allgather_real
     end interface
 
+    interface MPI_Isend
+        subroutine MPI_Isend_2d(buf, count, datatype, dest, tag, comm, request, ierror)
+            real(8), dimension(:, :), intent(in) :: buf
+            integer, intent(in) :: count, dest, tag
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, intent(out) :: request
+            integer, optional, intent(out) :: ierror
+        end subroutine
+
+        subroutine MPI_Isend_3d(buf, count, datatype, dest, tag, comm, request, ierror)
+            real(8), dimension(:, :, :), intent(in) :: buf
+            integer, intent(in) :: count, dest, tag
+            integer, intent(in) :: datatype
+            integer, intent(in) :: comm
+            integer, intent(out) :: request
+            integer, optional, intent(out) :: ierror
+        end subroutine
+    end interface
+
+    interface MPI_Allreduce
+        subroutine MPI_Allreduce_scalar(sendbuf, recvbuf, count, datatype, op, comm, ierror)
+            real(8), intent(in) :: sendbuf
+            real(8), intent(in) :: recvbuf
+            integer :: count, datatype, op, comm, ierror
+        end subroutine
+
+        subroutine MPI_Allreduce_1d(sendbuf, recvbuf, count, datatype, op, comm, ierror)
+            real(8), intent(in) :: sendbuf
+            real(8), dimension(:), intent(in) :: recvbuf
+            integer :: count, datatype, op, comm, ierror
+        end subroutine
+    end interface
+
     interface
         function MPI_Wtime() result(time)
             real(kind=8) :: time
         end function
-
-        subroutine MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
-            ! type(*), dimension(..), intent(in) :: sendbuf
-            real(8), dimension(..), intent(in) :: sendbuf
-            ! type(*), dimension(..) :: recvbuf
-            real(8), dimension(..) :: recvbuf
-            integer :: count, datatype, op, comm, ierror
-        end subroutine
 
         subroutine MPI_Barrier(comm, ierror)
             integer :: comm, ierror
@@ -97,16 +123,6 @@ module mpi
             integer, intent(in) :: comm
             logical, intent(in) :: remain_dims(*)
             integer, intent(out) :: newcomm
-            integer, optional, intent(out) :: ierror
-        end subroutine
-
-        subroutine MPI_Isend(buf, count, datatype, dest, tag, comm, request, ierror)
-            ! type(*), dimension(..), intent(in), asynchronous :: buf
-            real(8), dimension(..), intent(in) :: buf
-            integer, intent(in) :: count, dest, tag
-            integer, intent(in) :: datatype
-            integer, intent(in) :: comm
-            integer, intent(out) :: request
             integer, optional, intent(out) :: ierror
         end subroutine
 
