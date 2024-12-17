@@ -3731,9 +3731,9 @@ c
             write (9,*)
             write (9,*) 'Writing BR0 (before sign flip) to file: ',
      &                  trim(br_photo_original_file)
-            call wrhdf_2d (br_photo_original_file,
-     &                     .true.,nt_g,np_g,
-     &                     br0_g,th_g,ph_g,hdf32,ierr)
+!             call wrhdf_2d (br_photo_original_file,
+!      &                     .true.,nt_g,np_g,
+!      &                     br0_g,th_g,ph_g,hdf32,ierr)
           end if
         end if
 c
@@ -3755,8 +3755,8 @@ c
           write (9,*) '### COMMENT from SET_FLUX:'
           write (9,*)
           write (9,*) 'Writing BR0 to file: ',trim(br_photo_file)
-          call wrhdf_2d (br_photo_file,.true.,nt_g,np_g,
-     &                   br0_g,th_g,ph_g,hdf32,ierr)
+!           call wrhdf_2d (br_photo_file,.true.,nt_g,np_g,
+!      &                   br0_g,th_g,ph_g,hdf32,ierr)
         end if
       end if
 c
@@ -5830,8 +5830,8 @@ c
             write (*,*) '### COMMENT from WRITE_SOLUTION:'
             write (*,*)
             write (*,*) 'Writing the potential to file: ',trim(fname)
-            call wrhdf_3d (fname,.true.,nr_g,nt_g,np_g,
-     &                     phi_g,rh_g,th_g,ph_g,hdf32,ierr)
+!             call wrhdf_3d (fname,.true.,nr_g,nt_g,np_g,
+!      &                     phi_g,rh_g,th_g,ph_g,hdf32,ierr)
         end if
 c
         deallocate (phi_g)
@@ -5860,8 +5860,8 @@ c
           write (*,*) '### COMMENT from WRITE_SOLUTION:'
           write (*,*)
           write (*,*) 'Writing Br to file: ',trim(fname)
-          call wrhdf_3d (fname,.true.,nrm1_g,nt_g,np_g,
-     &                   br_g,r_g,th_g,ph_g,hdf32,ierr)
+!           call wrhdf_3d (fname,.true.,nrm1_g,nt_g,np_g,
+!      &                   br_g,r_g,th_g,ph_g,hdf32,ierr)
         end if
 c
         deallocate (br_g)
@@ -5890,8 +5890,8 @@ c
           write (*,*) '### COMMENT from WRITE_SOLUTION:'
           write (*,*)
           write (*,*) 'Writing Bt to file: ',trim(fname)
-          call wrhdf_3d (fname,.true.,nr_g,ntm1_g,np_g,
-     &                   bt_g,rh_g,t_g,ph_g,hdf32,ierr)
+!           call wrhdf_3d (fname,.true.,nr_g,ntm1_g,np_g,
+!      &                   bt_g,rh_g,t_g,ph_g,hdf32,ierr)
 c
         end if
 c
@@ -5921,8 +5921,8 @@ c
           write (*,*) '### COMMENT from WRITE_SOLUTION:'
           write (*,*)
           write (*,*) 'Writing Bp to file: ',trim(fname)
-          call wrhdf_3d (fname,.true.,nr_g,nt_g,npm1_g,
-     &                   bp_g,rh_g,th_g,p_g,hdf32,ierr)
+!           call wrhdf_3d (fname,.true.,nr_g,nt_g,npm1_g,
+!      &                   bp_g,rh_g,th_g,p_g,hdf32,ierr)
 c
         end if
 c
