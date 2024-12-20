@@ -803,11 +803,11 @@ c
         write (*,*)
         write (*,*) '### COMMENT from POT3D:'
         write (*,*) '### Starting PCG solve.'
-        call FLUSH(OUTPUT_UNIT)
+        FLUSH(OUTPUT_UNIT)
         write (9,*)
         write (9,*) '### COMMENT from POT3D:'
         write (9,*) '### Starting PCG solve.'
-        call FLUSH(9)
+        FLUSH(9)
       end if
 c
       call timer_on
