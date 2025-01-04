@@ -260,7 +260,7 @@ module mpi
         end subroutine
 
         subroutine MPI_Irecv_proc(buf, count, datatype, source, tag, comm, request, ierror)
-            real(8), dimension(..) :: buf
+            real(8), dimension(:,:) :: buf
             integer, intent(in) :: count, source, tag
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
