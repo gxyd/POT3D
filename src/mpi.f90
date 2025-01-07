@@ -227,6 +227,8 @@ module mpi
 
             ! local variables
             integer :: periods_int(ndims), reorder_int
+            periods_int = merge(1, 0, periods)  ! casts each element of periods to 1 (True) or 0 (False)
+            reorder_int = merge(1, 0, reorder)  ! cast reorder to 1 (True) or 0 (False)
             call c_mpi_cart_create(comm_old, ndims, dims, periods_int, reorder_int, comm_cart, ierror)
         end subroutine
 
