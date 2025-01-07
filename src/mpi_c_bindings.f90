@@ -106,7 +106,7 @@ module mpi_c_bindings
             integer(c_int), optional, intent(out) :: ierror
         end subroutine
 
-        subroutine c_mpi_comm_rank(comm, rank, ierror) bind(C, name="MPI_Comm_rank_proc")
+        subroutine c_mpi_comm_rank(comm, rank, ierror) bind(C, name="MPI_Comm_rank")
             import :: c_int
             integer(c_int), intent(in) :: comm
             integer(c_int), intent(out) :: rank
