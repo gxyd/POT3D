@@ -14,7 +14,7 @@ module mpi_c_bindings
 
         subroutine c_mpi_bcast_real(buffer, count, datatype, root, comm, ierror) bind(C, name="MPI_Bcast")
             import :: c_int, c_double
-            real(c_double), dimension(:, :) :: buffer
+            real(c_double), dimension(*) :: buffer
             integer(c_int), intent(in) :: count, root
             integer(c_int), intent(in) :: datatype
             integer(c_int), intent(in) :: comm
@@ -24,7 +24,7 @@ module mpi_c_bindings
         subroutine c_mpi_allgather_int(sendbuf, sendcount, sendtype, recvbuf, &
                                        recvcount, recvtype, comm, ierror) bind(C, name="MPI_Allgather")
             import :: c_int, c_double
-            integer(c_int), dimension(:), intent(in) :: sendbuf
+            integer(c_int), dimension(*), intent(in) :: sendbuf
             integer(c_int), dimension(*) :: recvbuf
             integer(c_int), intent(in) :: sendcount, recvcount
             integer(c_int), intent(in) :: sendtype, recvtype
@@ -35,7 +35,7 @@ module mpi_c_bindings
         subroutine c_mpi_allgather_real(sendbuf, sendcount, sendtype, recvbuf, &
                                         recvcount, recvtype, comm, ierror) bind(C, name="MPI_Allgather")
             import :: c_int, c_double
-            real(c_double), dimension(:), intent(in) :: sendbuf
+            real(c_double), dimension(*), intent(in) :: sendbuf
             real(c_double), dimension(*) :: recvbuf
             integer(c_int), intent(in) :: sendcount, recvcount
             integer(c_int), intent(in) :: sendtype, recvtype
@@ -45,7 +45,7 @@ module mpi_c_bindings
 
         subroutine c_mpi_isend_2d(buf, count, datatype, dest, tag, comm, request, ierror) bind(C, name="MPI_Isend")
             import :: c_int, c_double
-            real(c_double), dimension(:, :), intent(in) :: buf
+            real(c_double), dimension(*), intent(in) :: buf
             integer(c_int), intent(in) :: count, dest, tag
             integer(c_int), intent(in) :: datatype
             integer(c_int), intent(in) :: comm
@@ -55,7 +55,7 @@ module mpi_c_bindings
 
         subroutine c_mpi_isend_3d(buf, count, datatype, dest, tag, comm, request, ierror) bind(C, name="MPI_Isend")
             import :: c_int, c_double
-            real(c_double), dimension(:, :, :), intent(in) :: buf
+            real(c_double), dimension(*), intent(in) :: buf
             integer(c_int), intent(in) :: count, dest, tag
             integer(c_int), intent(in) :: datatype
             integer(c_int), intent(in) :: comm
@@ -73,7 +73,7 @@ module mpi_c_bindings
         subroutine c_mpi_allreduce_1d(sendbuf, recvbuf, count, datatype, op, comm, ierror) bind(C, name="MPI_Allreduce")
             import :: c_int, c_double
             real(c_double), intent(in) :: sendbuf
-            real(c_double), dimension(:), intent(in) :: recvbuf
+            real(c_double), dimension(*), intent(in) :: recvbuf
             integer(c_int) :: count, datatype, op, comm, ierror
         end subroutine
 
