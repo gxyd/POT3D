@@ -224,10 +224,12 @@ module mpi
             logical, intent(in) :: periods(ndims), reorder
             integer, intent(out) :: comm_cart
             integer, optional, intent(out) :: ierror
-            ! call c_mpi_cart_create(comm_old, ndims, dims, periods, reorder, comm_cart, ierror)
+
+            ! local variables
+            integer :: periods_int(ndims), reorder_int
+            call c_mpi_cart_create(comm_old, ndims, dims, periods_int, reorder_int, comm_cart, ierror)
         end subroutine
 
-        ! from here
         subroutine MPI_Cart_coords_proc(comm, rank, maxdims, coords, ierror)
             integer, intent(in) :: comm
             integer, intent(in) :: rank, maxdims
@@ -241,13 +243,18 @@ module mpi
             integer, intent(in) :: direction, disp
             integer, intent(out) :: rank_source, rank_dest
             integer, optional, intent(out) :: ierror
+            call c_mpi_cart_shift(comm, direction, disp, rank_source, rank_dest, ierror)
         end subroutine
 
         subroutine MPI_Cart_sub_proc(comm, remain_dims, newcomm, ierror)
             integer, intent(in) :: comm
-            logical, intent(in) :: remain_dims(*)
+            logical, intent(in) :: remain_dims(:) ! changed (:) -> (*)
             integer, intent(out) :: newcomm
             integer, optional, intent(out) :: ierror
+            integer :: remain_dims_int(size(remain_dims))
+            remain_dims_int = MERGE(1, 0, remain_dims(1:size(remain_dims)))
+
+            call c_mpi_cart_sub(comm, remain_dims_int, newcomm, ierror)
         end subroutine
 
         subroutine MPI_Recv_proc(buf, count, datatype, source, tag, comm, status, ierror)
@@ -257,6 +264,7 @@ module mpi
             integer, intent(in) :: comm
             integer :: status
             integer, optional, intent(out) :: ierror
+            call c_mpi_recv(buf, count, datatype, source, tag, comm, status, ierror)
         end subroutine
 
         subroutine MPI_Irecv_proc(buf, count, datatype, source, tag, comm, request, ierror)
@@ -266,6 +274,7 @@ module mpi
             integer, intent(in) :: comm
             integer, intent(out) :: request
             integer, optional, intent(out) :: ierror
+            call c_mpi_irecv(buf, count, datatype, source, tag, comm, request, ierror)
         end subroutine
 
         subroutine MPI_Waitall_proc(count, array_of_requests, array_of_statuses, ierror)
@@ -273,6 +282,7 @@ module mpi
             integer, intent(inout) :: array_of_requests(count)
             integer :: array_of_statuses(*)
             integer, optional, intent(out) :: ierror
+            call c_mpi_waitall(count, array_of_requests, array_of_requests, ierror)
         end subroutine
 
         subroutine MPI_Ssend_proc(buf, count, datatype, dest, tag, comm, ierror)
@@ -281,6 +291,7 @@ module mpi
             integer, intent(in) :: datatype
             integer, intent(in) :: comm
             integer, optional, intent(out) :: ierror
+            call c_mpi_ssend(buf, count, datatype, dest, tag, comm, ierror)
         end subroutine
 end module
 
