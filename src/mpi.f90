@@ -296,7 +296,3 @@ module mpi
             call c_mpi_ssend(buf, count, datatype, dest, tag, comm, ierror)
         end subroutine
 end module
-
-program main
-    implicit none
-end program main
