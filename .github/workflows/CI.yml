@@ -1,0 +1,28 @@
+name : CI
+
+on:
+  push:
+    branches:
+      - lf4
+    pull_request:
+      # workflow till be triggered on PR's against 'lf4' branch
+      # this is subject to change
+      branches:
+        - lf4
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: 14.0
+
+jobs:
+  Compile_POT3D_with_GFortran:
+    name: "Compile gxyd/POT3D repository with GFortran"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["macos-latest"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Print a dummy message
+        run: echo "CI is running here on ${{ matrix.os }}"
