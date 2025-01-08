@@ -32,3 +32,10 @@ jobs:
 
       - name: Print a dummy message
         run: echo "CI is running here on ${{ matrix.os }}"
+
+      - name: Compile with GFortran
+        shell: bash -e -l {0}
+        run: |
+            cd src
+            gfortran -c mpi_c_bindings.f90 mpi.f90 psi_io.f90 pot3d.F
+            gfortran mpi_c_bindings.o mpi.o psi_io.o pot3d.o -L$CONDA_PREFIX/lib -lmpi -o pot3d.out
