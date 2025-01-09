@@ -1,0 +1,39 @@
+name : CI
+
+on:
+  push:
+    branches:
+      - lf4
+  pull_request:
+    # workflow till be triggered on PR's against 'lf4' branch
+    # this is subject to change
+    branches:
+      - lf4
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: 14.0
+
+jobs:
+  Compile_POT3D_with_GFortran:
+    name: "Compile gxyd/POT3D repository with GFortran"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["macos-latest"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mamba-org/setup-micromamba@v2.0.2
+        with:
+          micromamba-version: '2.0.4-0'
+          environment-file: ci/environment.yml
+
+      - name: Print a dummy message
+        run: echo "CI is running here on ${{ matrix.os }}"
+
+      - name: Compile with GFortran
+        shell: bash -e -l {0}
+        run: |
+            cd src
+            gfortran -c mpi_c_bindings.f90 mpi.f90 psi_io.f90 pot3d.F
+            gfortran mpi_c_bindings.o mpi.o psi_io.o pot3d.o -L${CONDA_PREFIX}/lib -lmpi -o pot3d.out
