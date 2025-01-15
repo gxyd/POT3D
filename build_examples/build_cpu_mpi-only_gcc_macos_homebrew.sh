@@ -27,8 +27,10 @@ FC=mpif90
 # the SAME COMPILER used here, and is in the run-time environment.
 #################################################################
 
-HDF5_INCLUDE_DIR="/usr/local/include/"
-HDF5_LIB_DIR="/usr/local/lib/"
+# HDF5_INCLUDE_DIR="/usr/local/include/"
+HDF5_INCLUDE_DIR="/opt/homebrew/include/"
+# HDF5_LIB_DIR="/usr/local/lib/"
+HDF5_LIB_DIR="/opt/homebrew/lib/"
 
 ##################################################################
 # Please set the HDF5 linker flags to match the installed version.
@@ -51,7 +53,8 @@ FFLAGS="-O3 -march=native"
 ###########################################################################
 
 POT3D_CUSPARSE=0
-CCFLAGS="-O3"
+# CCFLAGS="-O3"
+CCFLAGS=""
 
 ###########################################################################
 ###########################################################################
@@ -100,4 +103,3 @@ cp pot3d ${POT3D_HOME}/bin/pot3d
 ${echo} "${cG}==> Build complete!${cX}"
 ${echo}      "    Please add the following to your shell startup (e.g. .bashrc, .profile, etc.):"
 ${echo} "${cC}    export PATH=${POT3D_HOME}/bin:\$PATH${cX}"
-
