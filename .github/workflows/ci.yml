@@ -29,13 +29,14 @@ jobs:
           environment-file: ci/environment.yml
 
       - name: Verify Environment
+        shell: bash -e -x -l {0}
         run: |
           echo "Active Environment: $MAMBA_DEFAULT_ENV"
-          micromamba list
           which gfortran
           which mpif90
 
       - name: Install HDF5 via Homebrew
+        shell: bash -e -x -l {0}
         run: |
           # Install Homebrew if not already installed
           if ! command -v brew &> /dev/null
@@ -48,12 +49,12 @@ jobs:
           ls /opt/homebrew/lib | grep hdf5
 
       - name: POT3D build
-        shell: bash
+        shell: bash -e -x -l {0}
         run: |
           ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D validation
-        shell: bash
+        shell: bash -e -x -l {0}
         run: |
           ./validate.sh
