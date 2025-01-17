@@ -28,6 +28,12 @@ jobs:
           micromamba-version: '2.0.4-0'
           environment-file: ci/environment.yml
 
+      - name: Verify Environment
+        run: |
+          echo "Active Environment: $(conda info --envs | grep '*' | awk '{print $1}')"
+          which gfortran
+          which mpif90
+
       - name: Install HDF5 via Homebrew
         run: |
           # Install Homebrew if not already installed
