@@ -30,7 +30,8 @@ jobs:
 
       - name: Verify Environment
         run: |
-          echo "Active Environment: $(conda info --envs | grep '*' | awk '{print $1}')"
+          echo "Active Environment: $MAMBA_DEFAULT_ENV"
+          micromamba list
           which gfortran
           which mpif90
 
