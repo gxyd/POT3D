@@ -25,7 +25,7 @@ endif
 LDFLAGS = -L<HDF5_LIB_DIR> <HDF5_LIB_FLAGS>
 
 all: $(OBJS)
-	$(FC) $(FFLAGS) $(OBJS) $(LDFLAGS) -o pot3d
+	$(FC) $(FFLAGS) $(OBJS) -o pot3d
 	rm -f *.mod *.o 2>/dev/null
 
 clean:
