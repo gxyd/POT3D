@@ -19,7 +19,7 @@
 # Enter your MPI compiler (typically "mpif90").
 #################################################################
 
-FC=mpif90
+FC=gfortran
 
 #################################################################
 # Please set the location of the HDF5 include & library files. 
@@ -29,14 +29,17 @@ FC=mpif90
 
 # HDF5_INCLUDE_DIR="/usr/local/include/"
 HDF5_INCLUDE_DIR="/opt/homebrew/include/"
+OPENMPI_INCLUDE_DIR="${CONDA_PREFIX}/include/"
 # HDF5_LIB_DIR="/usr/local/lib/"
 HDF5_LIB_DIR="/opt/homebrew/lib/"
+OPENMPI_LIB_DIR="${CONDA_PREFIX}/lib/"
 
 ##################################################################
 # Please set the HDF5 linker flags to match the installed version.
 ##################################################################
 
 HDF5_LIB_FLAGS="-lhdf5_fortran -lhdf5_hl_fortran -lhdf5 -lhdf5_hl"
+OPENMPI_LIB_FLAGS="-lmpi"
 
 ###########################################################################
 # Please set the compile flags based on your compiler and hardware setup.
@@ -86,8 +89,11 @@ sed \
   -e "s#<CCFLAGS>#${CCFLAGS}#g" \
   -e "s#<POT3D_CUSPARSE>#${POT3D_CUSPARSE}#g" \
   -e "s#<HDF5_INCLUDE_DIR>#${HDF5_INCLUDE_DIR}#g" \
+  -e "s#<OPENMPI_INCLUDE_DIR>#${OPENMPI_INCLUDE_DIR}#g" \
   -e "s#<HDF5_LIB_DIR>#${HDF5_LIB_DIR}#g" \
+  -e "s#<OPENMPI_LIB_DIR>#${OPENMPI_LIB_DIR}#g" \
   -e "s#<HDF5_LIB_FLAGS>#${HDF5_LIB_FLAGS}#g" \
+  -e "s#<OPENMPI_LIB_FLAGS>#${OPENMPI_LIB_FLAGS}#g" \
   Makefile.template > Makefile
 ${echo} "==> Compiling code..."
 make clean 1>/dev/null 2>/dev/null ; make 1>build.log 2>build.err
