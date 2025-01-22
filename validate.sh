@@ -7,7 +7,7 @@ cp ${POT3D_HOME}/testsuite/${TEST}/input/* ${POT3D_HOME}/testsuite/${TEST}/run/
 cd ${POT3D_HOME}/testsuite/${TEST}/run
 
 echo "Running POT3D with 1 MPI rank..."
-mpiexec -np 1 ${POT3D_HOME}/bin/pot3d 1> pot3d.log 2>pot3d.err
+${POT3D_HOME}/bin/pot3d 1> pot3d.log 2>pot3d.err
 echo "Done!"
 
 runtime=($(tail -n 5 timing.out | head -n 1))
