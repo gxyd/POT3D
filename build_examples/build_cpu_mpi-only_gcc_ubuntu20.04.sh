@@ -41,6 +41,7 @@ HDF5_LIB_FLAGS="-lhdf5_serial_fortran -lhdf5_serialhl_fortran -lhdf5_serial -lhd
 # Please set the compile flags based on your compiler and hardware setup.
 ###########################################################################
 
+# FFLAGS="-O3 -march=native"
 FFLAGS="-O3 -march=native $(mpif90 --showme:compile) $(mpif90 --showme:link)"
 
 ###########################################################################
