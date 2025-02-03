@@ -1,14 +1,12 @@
-name : CI
+name: CI
 
 on:
   push:
     branches:
-      - build_pot3d_unmodified
+      - build_pot3d_custom_mpi_wrappers
   pull_request:
-    # workflow till be triggered on PR's against 'lf4' branch
-    # this is subject to change
     branches:
-      - build_pot3d_unmodified
+      - build_pot3d_custom_mpi_wrappers
 
 env:
   MACOSX_DEPLOYMENT_TARGET: 14.0
@@ -19,11 +17,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["macos-latest"]
+        os: ["macos-latest", "ubuntu-20.04"]  
     steps:
       - uses: actions/checkout@v4
 
-      - uses: mamba-org/setup-micromamba@v2.0.2
+      - name: Set up Micromamba
+        uses: mamba-org/setup-micromamba@v2.0.2
         with:
           micromamba-version: '2.0.4-0'
           environment-file: ci/environment.yml
@@ -32,29 +31,52 @@ jobs:
         shell: bash -e -x -l {0}
         run: |
           echo "Active Environment: $MAMBA_DEFAULT_ENV"
-          which gfortran
-          which mpif90
+          which gfortran || { echo "gfortran not found"; exit 1; }
+          which mpif90 || { echo "mpif90 not found"; exit 1; }
 
-      - name: Install HDF5 via Homebrew
+      - name: Install HDF5 (macOS)
+        if: matrix.os == 'macos-latest'
         shell: bash -e -x -l {0}
         run: |
-          # Install Homebrew if not already installed
-          if ! command -v brew &> /dev/null
-          then
-            echo "Homebrew not found, installing..."
+          if ! command -v brew &>/dev/null; then
+            echo "Installing Homebrew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           fi
-
           brew install hdf5
-          ls /opt/homebrew/lib | grep hdf5
+          ls /opt/homebrew/lib | grep hdf5 || { echo "HDF5 not found"; exit 1; }
 
-      - name: POT3D build
+      - name: Install HDF5 (Ubuntu)
+        if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: |
-          ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
+          sudo apt-get update
+          sudo apt-get install -y libhdf5-dev
+          ls /usr/lib/x86_64-linux-gnu | grep hdf
+
+      - name: POT3D Build (MPI only)
+        shell: bash -e -x -l {0}
+        run: |
+          echo "RUNNER_OS is set to: $RUNNER_OS"
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
+          else
+            ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04.sh
+          fi
           export PATH=$PWD/bin:$PATH
 
-      - name: POT3D validation
+      - name: POT3D Validation
+        shell: bash -e -x -l {0}
+        run: ./validate.sh
+
+      - name: POT3D Build (MPI + Multithreaded) [Ubuntu only]
+        if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: |
-          ./validate.sh
+          export OMP_NUM_THREADS=2
+          ./build_examples/build_cpu_mpi+multithread_gcc_ubuntu20.04.sh
+          export PATH=$PWD/bin:$PATH
+
+      - name: POT3D Validation (MPI + Multithreaded) [Ubuntu only]
+        if: matrix.os == 'ubuntu-20.04'
+        shell: bash -e -x -l {0}
+        run: ./validate.sh

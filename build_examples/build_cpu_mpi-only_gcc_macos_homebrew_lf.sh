@@ -19,7 +19,8 @@
 # Enter your MPI compiler (typically "mpif90").
 #################################################################
 
-FC=mpif90
+FC=gfortran
+MPICC=mpicc
 
 #################################################################
 # Please set the location of the HDF5 include & library files. 
@@ -42,7 +43,7 @@ HDF5_LIB_FLAGS="-lhdf5_fortran -lhdf5_hl_fortran -lhdf5 -lhdf5_hl"
 # Please set the compile flags based on your compiler and hardware setup.
 ###########################################################################
 
-FFLAGS="-O3 -march=native"
+FFLAGS="-O3 -march=native -lmpi"
 
 ###########################################################################
 # If using NV HPC SDK for GPUs, with CUDA version >= 11.3, you can set 
@@ -82,6 +83,7 @@ fi
 ${echo} "==> Generating Makefile from Makefile.template..."
 sed \
   -e "s#<FC>#${FC}#g" \
+  -e "s#<MPICC>#${MPICC}#g" \
   -e "s#<FFLAGS>#${FFLAGS}#g" \
   -e "s#<CCFLAGS>#${CCFLAGS}#g" \
   -e "s#<POT3D_CUSPARSE>#${POT3D_CUSPARSE}#g" \
