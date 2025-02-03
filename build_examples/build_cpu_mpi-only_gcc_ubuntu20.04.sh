@@ -41,7 +41,7 @@ HDF5_LIB_FLAGS="-lhdf5_serial_fortran -lhdf5_serialhl_fortran -lhdf5_serial -lhd
 # Please set the compile flags based on your compiler and hardware setup.
 ###########################################################################
 
-FFLAGS="-O3 -march=native -lmpi -lz"
+FFLAGS="-O3 -march=native $(mpif90 --showme:compile) $(mpif90 --showme:link)"
 
 ###########################################################################
 # If using NV HPC SDK for GPUs, with CUDA version >= 11.3, you can set 
