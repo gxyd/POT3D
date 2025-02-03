@@ -34,7 +34,7 @@ jobs:
           which mpif90
 
       - name: Install HDF5 via Homebrew (macOS)
-        runs-on: 'macos-latest'
+        runs-on: macos-latest
         shell: bash -e -x -l {0}
         run: |
           # Install Homebrew if not already installed
@@ -48,14 +48,14 @@ jobs:
           ls /opt/homebrew/lib | grep hdf5
 
       - name: Install HDF5 via APT (Ubuntu)
-        runs-on: 'ubuntu-latest'  
+        runs-on: ubuntu-latest  
         shell: bash -e -x -l {0}
         run: |
           sudo apt-get update
           sudo apt-get install -y libhdf5-dev
 
       - name: POT3D build only mpi
-        runs-on: 'macos-latest'
+        runs-on: macos-latest
         shell: bash -e -x -l {0}
         run: |
           # Consider creating OS-specific build scripts if needed
@@ -63,13 +63,13 @@ jobs:
           export PATH=$PWD/bin:$PATH 
 
       - name: POT3D validation
-        runs-on: 'macos-latest'
+        runs-on: macos-latest
         shell: bash -e -x -l {0}
         run: |
           ./validate.sh
 
       - name: POT3D build only mpi
-        runs-on: 'ubuntu-latest'
+        runs-on: ubuntu-latest
         shell: bash -e -x -l {0}
         run: |
           # Consider creating OS-specific build scripts if needed
@@ -77,13 +77,13 @@ jobs:
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D validation
-        runs-on: 'ubuntu-latest'
+        runs-on: ubuntu-latest
         shell: bash -e -x -l {0}
         run: |
           ./validate.sh
 
       - name: POT3D build mpi+multithreaded
-        runs-on: 'ubuntu-latest'
+        runs-on: ubuntu-latest
         shell: bash -e -x -l {0}
         run: |
           # Consider creating OS-specific build scripts if needed
@@ -91,7 +91,7 @@ jobs:
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D validation
-        runs-on: 'ubuntu-latest'
+        runs-on: ubuntu-latest
         shell: bash -e -x -l {0}
         run: |
           ./validate.sh
