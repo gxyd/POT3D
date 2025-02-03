@@ -25,9 +25,14 @@ endif
 
 LDFLAGS = -L<HDF5_LIB_DIR> <HDF5_LIB_FLAGS>
 
+ifeq ($(findstring gfortran,$(FC)),)
+all: $(OBJS)
+	rm -f *.mod *.o 2>/dev/null
+else
 all: $(OBJS)
 	$(FC) $(FFLAGS) $(OBJS) -o pot3d
 	rm -f *.mod *.o 2>/dev/null
+endif
 
 clean:
 	rm -f *.mod *.modmic *.o pot3d_cpp.f 2>/dev/null
@@ -56,5 +61,9 @@ mpi_wrapper.o: mpi_wrapper.c
 	$(MPICC) -c $(CCFLAGS) $<
 
 pot3d_cpp.o: pot3d_cpp.f90
+ifeq ($(findstring gfortran,$(FC)),)
+	$(FC) -c $(FFLAGS) --implicit-interface --show-asr $< | cat
+else
 	$(FC) -c $(FFLAGS) $<
+endif
 
