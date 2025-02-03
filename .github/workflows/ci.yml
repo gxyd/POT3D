@@ -9,15 +9,15 @@ on:
       - build_pot3d_custom_mpi_wrappers
 
 env:
-  MACOSX_DEPLOYMENT_TARGET: 14.0 
-  
+  MACOSX_DEPLOYMENT_TARGET: 14.0
+
 jobs:
   Compile_POT3D_with_GFortran:
     name: "Build POT3D and validate"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ["macos-latest", "ubuntu-latest"]  
+        os: ["macos-latest", "ubuntu-20.04"]  
     steps:
       - uses: actions/checkout@v4
 
@@ -46,7 +46,7 @@ jobs:
           ls /opt/homebrew/lib | grep hdf5 || { echo "HDF5 not found"; exit 1; }
 
       - name: Install HDF5 (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: |
           sudo apt-get update
@@ -56,6 +56,7 @@ jobs:
       - name: POT3D Build (MPI only)
         shell: bash -e -x -l {0}
         run: |
+          echo "RUNNER_OS is set to: $RUNNER_OS"
           if [[ "$RUNNER_OS" == "macOS" ]]; then
             ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
           else
@@ -68,13 +69,13 @@ jobs:
         run: ./validate.sh
 
       - name: POT3D Build (MPI + Multithreaded) [Ubuntu only]
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: |
           ./build_examples/build_cpu_mpi+multithread_gcc_ubuntu20.04.sh
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D Validation (MPI + Multithreaded) [Ubuntu only]
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: ./validate.sh
