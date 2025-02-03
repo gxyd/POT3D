@@ -3,10 +3,14 @@ name: CI
 on:
   push:
     branches:
+      # this runs on two branches, in the future they might
+      # need separate ci files
       - build_pot3d_custom_mpi_wrappers
+      - build_pot3d_custom_mpi_wrappers_and_without_hdf5
   pull_request:
     branches:
       - build_pot3d_custom_mpi_wrappers
+      - build_pot3d_custom_mpi_wrappers_and_without_hdf5
 
 env:
   MACOSX_DEPLOYMENT_TARGET: 14.0
