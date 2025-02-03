@@ -925,7 +925,6 @@ subroutine read_input_file
 !
       do
         read(8, '(A)', iostat=ierr) line
-        print *, "ierr: ", ierr
         if (ierr /= 0) then
             ierr = 0  ! this assigns that no error occured
             exit      ! we've reached end of file
@@ -958,42 +957,36 @@ subroutine read_input_file
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (drratio(i), i = 1, n_values)
-                  print *, "ierr in drratio", ierr
               case ("dtratio")
                   n_values = 1
                   do i = 1, len_trim(value)
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (dtratio(i), i = 1, n_values)
-                  print *, "ierr in dtratio", ierr
               case ("dpratio")
                   n_values = 1
                   do i = 1, len_trim(value)
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (dpratio(i), i = 1, n_values)
-                  print *, "ierr in dpratio", ierr
               case ("rfrac")
                   n_values = 1
                   do i = 1, len_trim(value)
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (rfrac(i), i = 1, n_values)
-                  print *, "ierr in rfrac", ierr
               case ("tfrac")
                   n_values = 1
                   do i = 1, len_trim(value)
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (tfrac(i), i = 1, n_values)
-                  print *, "ierr in tfrac", ierr
               case ("pfrac")
                   n_values = 1
                   do i = 1, len_trim(value)
                       if (value(i:i) == ',') n_values = n_values + 1
                   end do
                   read(value, *, iostat=ierr) (pfrac(i), i = 1, n_values)
-                  print *, "ierr in pfrac", ierr
               case ("nfrmesh")
                   read(value, *) nfrmesh
               case ("nftmesh")
@@ -1073,7 +1066,6 @@ subroutine read_input_file
 ! ****** Check if output names were overwritten.
 ! ****** If not, set default names with format fmt.
 !
-      print *, "phifile: ", phifile
       if (trim(phifile).eq.'default') then
         phifile='phi.'//trim(fmt)
       end if
