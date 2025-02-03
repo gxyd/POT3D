@@ -72,6 +72,7 @@ jobs:
         if: matrix.os == 'ubuntu-20.04'
         shell: bash -e -x -l {0}
         run: |
+          export OMP_NUM_THREADS=2
           ./build_examples/build_cpu_mpi+multithread_gcc_ubuntu20.04.sh
           export PATH=$PWD/bin:$PATH
 
