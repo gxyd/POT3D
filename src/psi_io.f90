@@ -33,7 +33,7 @@ module rp1d_def
       implicit none
 !
       type :: rp1d
-        real(REAL64), dimension(:), pointer, contiguous :: f
+        real(REAL64), dimension(:), pointer :: f
       end type
 !
 end module
@@ -57,7 +57,7 @@ module sds_def
         logical :: scale
         logical :: hdf32
         type(rp1d), dimension(mxdim) :: scales
-        real(REAL64), dimension(:,:,:), pointer, contiguous :: f
+        real(REAL64), dimension(:,:,:), pointer :: f
       end type
 !
 end module
