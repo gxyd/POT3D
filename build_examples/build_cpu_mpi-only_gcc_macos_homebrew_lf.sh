@@ -46,7 +46,9 @@ HDF5_LIB_FLAGS="-lhdf5_fortran -lhdf5_hl_fortran -lhdf5 -lhdf5_hl"
 
 # this is how FFLAGS is originally set in POT3D repository
 # FFLAGS = "-O3 -march=native"
-if [[ $FC == "gfortran" ]]; then
+
+# we check whether "FC" contains "gfortran" or not
+if echo "$FC" | grep -iq "gfortran"; then
   FFLAGS="-O3 -march=native -lmpi"
 else
   FFLAGS="-lmpi"
