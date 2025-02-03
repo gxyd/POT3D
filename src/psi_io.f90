@@ -67,14 +67,12 @@ module rdhdf_1d_interface
         subroutine rdhdf_1d (fname,scale,nx,f,x,ierr)
         use iso_fortran_env
         implicit none
-        character(*) :: fname
-        logical :: scale
-        integer :: nx
+        character(*), intent(in) :: fname
+        logical, intent(out) :: scale
+        integer, intent(out) :: nx
         real(REAL64), dimension(:), pointer :: f
         real(REAL64), dimension(:), pointer :: x
-        integer :: ierr
-        intent(in) :: fname
-        intent(out) :: scale,nx,ierr
+        integer, intent(out) :: ierr
         end subroutine
       end interface
 end module
@@ -84,14 +82,12 @@ module rdhdf_2d_interface
         subroutine rdhdf_2d (fname,scale,nx,ny,f,x,y,ierr)
         use iso_fortran_env
         implicit none
-        character(*) :: fname
-        logical :: scale
-        integer :: nx,ny
+        character(*), intent(in) :: fname
+        logical, intent(out) :: scale
+        integer, intent(out) :: nx,ny
         real(REAL64), dimension(:,:), pointer :: f
         real(REAL64), dimension(:), pointer :: x,y
-        integer :: ierr
-        intent(in) :: fname
-        intent(out) :: scale,nx,ny,ierr
+        integer, intent(out) :: ierr
         end subroutine
       end interface
 end module
@@ -101,14 +97,12 @@ module rdhdf_3d_interface
         subroutine rdhdf_3d (fname,scale,nx,ny,nz,f,x,y,z,ierr)
         use iso_fortran_env
         implicit none
-        character(*) :: fname
-        logical :: scale
-        integer :: nx,ny,nz
+        character(*), intent(in) :: fname
+        logical, intent(out) :: scale
+        integer, intent(out) :: nx,ny,nz
         real(REAL64), dimension(:,:,:), pointer :: f
         real(REAL64), dimension(:), pointer :: x,y,z
-        integer :: ierr
-        intent(in) :: fname
-        intent(out) :: scale,nx,ny,nz,ierr
+        integer, intent(out) :: ierr
         end subroutine
       end interface
 end module
@@ -256,12 +250,11 @@ subroutine rdhdf (fname,s,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
+      character(*), intent(in) :: fname
       character, dimension(256) :: sds_name, dim_name
-      type(sds) :: s
-      integer :: ierr,i,i_bin
-      intent(in) :: fname
-      intent(out) :: s,ierr
+      type(sds), intent(out) :: s
+      integer :: i,i_bin
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -772,11 +765,9 @@ subroutine wrhdf (fname,s,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      type(sds) :: s
-      integer :: ierr
-      intent(in) :: fname,s
-      intent(out) :: ierr
+      character(*), intent(in) :: fname
+      type(sds), intent(in) :: s
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1032,14 +1023,13 @@ subroutine rdhdf_1d (fname,scale,nx,f,x,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx,i
+      character(*), intent(in) :: fname
+      logical, intent(out) :: scale
+      integer, intent(out) :: nx
+      integer :: i
       real(REAL64), dimension(:), pointer :: f
       real(REAL64), dimension(:), pointer :: x
-      integer :: ierr
-      intent(in) :: fname
-      intent(out) :: scale,nx,ierr
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1101,14 +1091,13 @@ subroutine rdhdf_2d (fname,scale,nx,ny,f,x,y,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx,ny,i
+      character(*), intent(in) :: fname
+      logical, intent(out) :: scale
+      integer, intent(out) :: nx,ny
+      integer :: i
       real(REAL64), dimension(:,:), pointer :: f
       real(REAL64), dimension(:), pointer :: x,y
-      integer :: ierr
-      intent(in) :: fname
-      intent(out) :: scale,nx,ny,ierr
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1171,14 +1160,12 @@ subroutine rdhdf_3d (fname,scale,nx,ny,nz,f,x,y,z,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx,ny,nz
+      character(*), intent(in) :: fname
+      logical, intent(out) :: scale
+      integer, intent(out) :: nx,ny,nz
       real(REAL64), dimension(:,:,:), pointer :: f
       real(REAL64), dimension(:), pointer :: x,y,z
-      integer :: ierr
-      intent(in) :: fname
-      intent(out) :: scale,nx,ny,nz,ierr
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1239,15 +1226,13 @@ subroutine wrhdf_1d (fname,scale,nx,f,x,hdf32,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx
-      real(REAL64), dimension(nx,1,1), target :: f
-      real(REAL64), dimension(nx), target :: x
-      logical :: hdf32
-      integer :: ierr
-      intent(in) :: fname,scale,nx,f,x,hdf32
-      intent(out) :: ierr
+      character(*), intent(in) :: fname
+      logical, intent(in) :: scale
+      integer, intent(in) :: nx
+      real(REAL64), intent(in), dimension(nx,1,1), target :: f
+      real(REAL64), intent(in), dimension(nx), target :: x
+      logical, intent(in) :: hdf32
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1309,16 +1294,14 @@ subroutine wrhdf_2d (fname,scale,nx,ny,f,x,y,hdf32,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx,ny
-      real(REAL64), dimension(nx,ny,1), target :: f
-      real(REAL64), dimension(nx), target :: x
-      real(REAL64), dimension(ny), target :: y
-      logical :: hdf32
-      integer :: ierr
-      intent(in) :: fname,scale,nx,ny,f,x,y,hdf32
-      intent(out) :: ierr
+      character(*), intent(in) :: fname
+      logical, intent(in) :: scale
+      integer, intent(in) :: nx,ny
+      real(REAL64), intent(in), dimension(nx,ny,1), target :: f
+      real(REAL64), intent(in), dimension(nx), target :: x
+      real(REAL64), intent(in), dimension(ny), target :: y
+      logical, intent(in) :: hdf32
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
@@ -1381,17 +1364,15 @@ subroutine wrhdf_3d (fname,scale,nx,ny,nz,f,x,y,z,hdf32,ierr)
 !
 !-----------------------------------------------------------------------
 !
-      character(*) :: fname
-      logical :: scale
-      integer :: nx,ny,nz
-      real(REAL64), dimension(nx,ny,nz), target :: f
-      real(REAL64), dimension(nx), target :: x
-      real(REAL64), dimension(ny), target :: y
-      real(REAL64), dimension(nz), target :: z
-      logical :: hdf32
-      integer :: ierr
-      intent(in) :: fname,scale,nx,ny,nz,f,x,y,z,hdf32
-      intent(out) :: ierr
+      character(*), intent(in) :: fname
+      logical, intent(in) :: scale
+      integer, intent(in) :: nx,ny,nz
+      real(REAL64), intent(in), dimension(nx,ny,nz), target :: f
+      real(REAL64), intent(in), dimension(nx), target :: x
+      real(REAL64), intent(in), dimension(ny), target :: y
+      real(REAL64), intent(in), dimension(nz), target :: z
+      logical, intent(in) :: hdf32
+      integer, intent(out) :: ierr
 !
 !-----------------------------------------------------------------------
 !
