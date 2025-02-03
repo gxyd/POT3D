@@ -21,7 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: mamba-org/setup-micromamba@v2.0.2
+      - name: Set up Micromamba
+        uses: mamba-org/setup-micromamba@v2.0.2
         with:
           micromamba-version: '2.0.4-0'
           environment-file: ci/environment.yml
@@ -30,68 +31,50 @@ jobs:
         shell: bash -e -x -l {0}
         run: |
           echo "Active Environment: $MAMBA_DEFAULT_ENV"
-          which gfortran
-          which mpif90
+          which gfortran || { echo "gfortran not found"; exit 1; }
+          which mpif90 || { echo "mpif90 not found"; exit 1; }
 
-      - name: Install HDF5 via Homebrew (macOS)
-        runs-on: macos-latest
+      - name: Install HDF5 (macOS)
+        if: matrix.os == 'macos-latest'
         shell: bash -e -x -l {0}
         run: |
-          # Install Homebrew if not already installed
-          if ! command -v brew &> /dev/null
-          then
-            echo "Homebrew not found, installing..."
+          if ! command -v brew &>/dev/null; then
+            echo "Installing Homebrew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           fi
-
           brew install hdf5
-          ls /opt/homebrew/lib | grep hdf5
+          ls /opt/homebrew/lib | grep hdf5 || { echo "HDF5 not found"; exit 1; }
 
-      - name: Install HDF5 via APT (Ubuntu)
-        runs-on: ubuntu-latest  
+      - name: Install HDF5 (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         shell: bash -e -x -l {0}
         run: |
           sudo apt-get update
           sudo apt-get install -y libhdf5-dev
+          ls /usr/lib/x86_64-linux-gnu | grep hdf
 
-      - name: POT3D build only mpi
-        runs-on: macos-latest
+      - name: POT3D Build (MPI only)
         shell: bash -e -x -l {0}
         run: |
-          # Consider creating OS-specific build scripts if needed
-          ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
-          export PATH=$PWD/bin:$PATH 
-
-      - name: POT3D validation
-        runs-on: macos-latest
-        shell: bash -e -x -l {0}
-        run: |
-          ./validate.sh
-
-      - name: POT3D build only mpi
-        runs-on: ubuntu-latest
-        shell: bash -e -x -l {0}
-        run: |
-          # Consider creating OS-specific build scripts if needed
-          ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04.sh
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
+          else
+            ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04.sh
+          fi
           export PATH=$PWD/bin:$PATH
 
-      - name: POT3D validation
-        runs-on: ubuntu-latest
+      - name: POT3D Validation
         shell: bash -e -x -l {0}
-        run: |
-          ./validate.sh
+        run: ./validate.sh
 
-      - name: POT3D build mpi+multithreaded
-        runs-on: ubuntu-latest
+      - name: POT3D Build (MPI + Multithreaded) [Ubuntu only]
+        if: matrix.os == 'ubuntu-latest'
         shell: bash -e -x -l {0}
         run: |
-          # Consider creating OS-specific build scripts if needed
           ./build_examples/build_cpu_mpi+multithread_gcc_ubuntu20.04.sh
           export PATH=$PWD/bin:$PATH
 
-      - name: POT3D validation
-        runs-on: ubuntu-latest
+      - name: POT3D Validation (MPI + Multithreaded) [Ubuntu only]
+        if: matrix.os == 'ubuntu-latest'
         shell: bash -e -x -l {0}
-        run: |
-          ./validate.sh
+        run: ./validate.sh
