@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - build_pot3d_custom_mpi_wrappers
+      - build_pot3d_custom_mpi_wrappers_and_without_hdf5
   pull_request:
     branches:
-      - build_pot3d_custom_mpi_wrappers
+      - build_pot3d_custom_mpi_wrappers_and_without_hdf5
 
 env:
   MACOSX_DEPLOYMENT_TARGET: 14.0
@@ -33,29 +33,6 @@ jobs:
           echo "Active Environment: $MAMBA_DEFAULT_ENV"
           which gfortran || { echo "gfortran not found"; exit 1; }
           which mpif90 || { echo "mpif90 not found"; exit 1; }
-
-      - name: Install HDF5 (macOS)
-        if: matrix.os == 'macos-latest'
-        shell: bash -e -x -l {0}
-        run: |
-          if ! command -v brew &>/dev/null; then
-            echo "Installing Homebrew..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          fi
-          brew install hdf5
-          ls /opt/homebrew/lib | grep hdf5 || { echo "HDF5 not found"; exit 1; }
-
-      - name: Install HDF5 (Ubuntu)
-        if: matrix.os == 'ubuntu-20.04'
-        shell: bash -e -x -l {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libhdf5-dev libsz2
-          ls /usr/lib/x86_64-linux-gnu | grep hdf
-          dpkg -l | grep libsz2
-          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libsz.so.2:$LD_LIBRARY_PATH
-          /lib/x86_64-linux-gnu/libc.so.6
-
 
       - name: POT3D Build (MPI only)
         shell: bash -e -x -l {0}
