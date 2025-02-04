@@ -1,6 +1,6 @@
 FC=<FC>
 MPICC=<MPICC>
-FFLAGS = <FFLAGS>
+FFLAGS=<FFLAGS>
 
 OBJS0 = mpi_wrapper.o mpi_c_bindings.o mpi.o psi_io.o
 

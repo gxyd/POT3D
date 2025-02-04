@@ -19,7 +19,8 @@
 # Enter your MPI compiler (typically "mpif90").
 #################################################################
 
-FC=mpif90
+FC=gfortran
+MPICC=mpicc
 
 #################################################################
 # Please set the location of the HDF5 include & library files. 
@@ -27,20 +28,20 @@ FC=mpif90
 # the SAME COMPILER used here, and is in the run-time environment.
 #################################################################
 
-HDF5_INCLUDE_DIR="/usr/include/hdf5/serial"
-HDF5_LIB_DIR="/usr/lib/x86_64-linux-gnu"
+# HDF5_INCLUDE_DIR="/usr/include/hdf5/serial"
+# HDF5_LIB_DIR="/usr/lib/x86_64-linux-gnu"
 
 ##################################################################
 # Please set the HDF5 linker flags to match the installed version.
 ##################################################################
 
-HDF5_LIB_FLAGS="-lhdf5_serial_fortran -lhdf5_serialhl_fortran -lhdf5_serial -lhdf5_serial_hl"
+# HDF5_LIB_FLAGS="-lhdf5_serial_fortran -lhdf5_serialhl_fortran -lhdf5_serial -lhdf5_serial_hl"
 
 ###########################################################################
 # Please set the compile flags based on your compiler and hardware setup.
 ###########################################################################
-
-FFLAGS="-O3 -march=native -ftree-parallelize-loops=${OMP_NUM_THREADS}"
+# FFLAGS="-O3 -march=native -ftree-parallelize-loops=${OMP_NUM_THREADS}"
+FFLAGS="-O3 -march=native $(mpif90 --showme:compile) $(mpif90 --showme:link) -ftree-parallelize-loops=${OMP_NUM_THREADS}"
 
 ###########################################################################
 # If using NV HPC SDK for GPUs, with CUDA version >= 11.3, you can set 
@@ -50,7 +51,7 @@ FFLAGS="-O3 -march=native -ftree-parallelize-loops=${OMP_NUM_THREADS}"
 # You must also set CCFLAGS to use OpenACC in the C code.
 ###########################################################################
 
-POT3D_CUSPARSE=0
+# POT3D_CUSPARSE=0
 CCFLAGS="-O3"
 
 ###########################################################################
@@ -79,13 +80,10 @@ fi
 ${echo} "==> Generating Makefile from Makefile.template..."
 sed \
   -e "s#<FC>#${FC}#g" \
+  -e "s#<MPICC>#${MPICC}#g" \
   -e "s#<FFLAGS>#${FFLAGS}#g" \
   -e "s#<CCFLAGS>#${CCFLAGS}#g" \
-  -e "s#<POT3D_CUSPARSE>#${POT3D_CUSPARSE}#g" \
-  -e "s#<HDF5_INCLUDE_DIR>#${HDF5_INCLUDE_DIR}#g" \
-  -e "s#<HDF5_LIB_DIR>#${HDF5_LIB_DIR}#g" \
-  -e "s#<HDF5_LIB_FLAGS>#${HDF5_LIB_FLAGS}#g" \
-  Makefile.template > Makefile
+  Makefile_lf.template > Makefile
 ${echo} "==> Compiling code..."
 make clean 1>/dev/null 2>/dev/null ; make 1>build.log 2>build.err
 if [ ! -e pot3d ]; then
@@ -100,3 +98,4 @@ cp pot3d ${POT3D_HOME}/bin/pot3d
 ${echo} "${cG}==> Build complete!${cX}"
 ${echo}      "    Please add the following to your shell startup (e.g. .bashrc, .profile, etc.):"
 ${echo} "${cC}    export PATH=${POT3D_HOME}/bin:\$PATH${cX}"
+

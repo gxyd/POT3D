@@ -84,10 +84,6 @@ sed \
   -e "s#<MPICC>#${MPICC}#g" \
   -e "s#<FFLAGS>#${FFLAGS}#g" \
   -e "s#<CCFLAGS>#${CCFLAGS}#g" \
-  # -e "s#<POT3D_CUSPARSE>#${POT3D_CUSPARSE}#g" \
-  # -e "s#<HDF5_INCLUDE_DIR>#${HDF5_INCLUDE_DIR}#g" \
-  # -e "s#<HDF5_LIB_DIR>#${HDF5_LIB_DIR}#g" \
-  # -e "s#<HDF5_LIB_FLAGS>#${HDF5_LIB_FLAGS}#g" \
   Makefile_lf.template > Makefile
 ${echo} "==> Compiling code..."
 make clean 1>/dev/null 2>/dev/null ; make 1>build.log 2>build.err
