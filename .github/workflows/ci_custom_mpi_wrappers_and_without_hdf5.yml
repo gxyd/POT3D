@@ -41,7 +41,7 @@ jobs:
           if [[ "$RUNNER_OS" == "macOS" ]]; then
             ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
           else
-            ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04.sh
+            ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04_lf.sh
           fi
           export PATH=$PWD/bin:$PATH
 
