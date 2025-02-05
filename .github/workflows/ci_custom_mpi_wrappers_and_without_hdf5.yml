@@ -38,7 +38,7 @@ jobs:
         shell: bash -e -x -l {0}
         run: |
           echo "RUNNER_OS is set to: $RUNNER_OS"
-          ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_gf.sh
+          ./build_examples/build_cpu_mpi-only_gcc_gfortran.sh
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D Validation
