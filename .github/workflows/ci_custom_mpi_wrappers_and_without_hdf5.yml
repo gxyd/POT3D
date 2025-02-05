@@ -39,7 +39,7 @@ jobs:
         run: |
           echo "RUNNER_OS is set to: $RUNNER_OS"
           if [[ "$RUNNER_OS" == "macOS" ]]; then
-            ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
+            ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_gf.sh
           else
             ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04_lf.sh
           fi
