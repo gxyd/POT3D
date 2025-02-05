@@ -3,7 +3,7 @@
 # and doesn't use any HDF5
 POT3D_HOME=$PWD
 MPICC=${CONDA_PREFIX}/bin/mpicc
-FC="$PWD/../src/bin/lfortran"
+FC="$PWD/../lfortran/src/bin/lfortran"
 FFLAGS="-lmpi"
 
 echo "==> Using Fortran compiler: " ${FC}
@@ -42,4 +42,4 @@ if [ ! -f pot3d_cpp.f90 ]; then
     exit 1
 fi
 
-${FC} -c ${FFLAGS} --implicit-interface pot3d_cpp.f90 --show-asr
+${FC} -c ${FFLAGS} --implicit-interface pot3d_cpp.f90 --show-asr > /dev/null 2>&1
