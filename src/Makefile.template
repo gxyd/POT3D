@@ -1,5 +1,4 @@
 FC=<FC>
-MPICC=<MPICC>
 
 POT3D_CUSPARSE=<POT3D_CUSPARSE>
 
@@ -15,7 +14,7 @@ endif
 
 FFLAGS = <FFLAGS> $(ADDFLAGS) -I<HDF5_INCLUDE_DIR>
 
-OBJS0 = mpi_wrapper.o mpi_c_bindings.o mpi.o psi_io.o
+OBJS0 = psi_io.o
 
 ifeq ($(POT3D_CUSPARSE),1)
   OBJS = $(OBJS0) lusol_cusparse.o pot3d_cpp.o
@@ -25,45 +24,22 @@ endif
 
 LDFLAGS = -L<HDF5_LIB_DIR> <HDF5_LIB_FLAGS>
 
-ifeq ($(findstring gfortran,$(FC)),)
 all: $(OBJS)
+	$(FC) $(FFLAGS) $(OBJS) $(LDFLAGS) -o pot3d
 	rm -f *.mod *.o 2>/dev/null
-else
-all: $(OBJS)
-	$(FC) $(FFLAGS) $(OBJS) -o pot3d
-	rm -f *.mod *.o 2>/dev/null
-endif
 
 clean:
 	rm -f *.mod *.modmic *.o pot3d_cpp.f 2>/dev/null
 	rm pot3d 2>/dev/null
 
 pot3d_cpp.f90: pot3d.F90
-	@if echo "$(FC)" | grep -iq "gfortran"; then \
-		$(FC) -E -cpp $(IF_DEF) > pot3d_cpp.f90 $<; \
-	else \
-		$(FC) -E --cpp $(IF_DEF) > pot3d_cpp.f90 $<; \
-	fi
+	$(FC) -E -cpp $(IF_DEF) > pot3d_cpp.f90 $<
 
 psi_io.o: psi_io.f90
-	$(FC) -c $(FFLAGS) $<
-
-mpi_c_bindings.o: mpi_c_bindings.f90
-	$(FC) -c $(FFLAGS) $<
-
-mpi.o: mpi.f90
 	$(FC) -c $(FFLAGS) $<
 
 lusol_cusparse.o: lusol_cusparse.c 
 	$(CC) -c $(CCFLAGS) $<
 
-mpi_wrapper.o: mpi_wrapper.c
-	$(MPICC) -c $(CCFLAGS) $<
-
 pot3d_cpp.o: pot3d_cpp.f90
-ifeq ($(findstring gfortran,$(FC)),)
-	$(FC) -c $(FFLAGS) --implicit-interface --show-asr $< | cat
-else
 	$(FC) -c $(FFLAGS) $<
-endif
-

@@ -29,16 +29,9 @@ MPICC=mpicc
 # the SAME COMPILER used here, and is in the run-time environment.
 #################################################################
 
-# HDF5_INCLUDE_DIR="/usr/local/include/"
-HDF5_INCLUDE_DIR="/opt/homebrew/include/"
-# HDF5_LIB_DIR="/usr/local/lib/"
-HDF5_LIB_DIR="/opt/homebrew/lib/"
-
 ##################################################################
 # Please set the HDF5 linker flags to match the installed version.
 ##################################################################
-
-HDF5_LIB_FLAGS="-lhdf5_fortran -lhdf5_hl_fortran -lhdf5 -lhdf5_hl"
 
 ###########################################################################
 # Please set the compile flags based on your compiler and hardware setup.
@@ -62,9 +55,8 @@ fi
 # You must also set CCFLAGS to use OpenACC in the C code.
 ###########################################################################
 
-POT3D_CUSPARSE=0
-# CCFLAGS="-O3"
-CCFLAGS=""
+# POT3D_CUSPARSE=0
+CCFLAGS="-O3"
 
 ###########################################################################
 ###########################################################################
@@ -90,17 +82,13 @@ ${echo} "==> Removing old Makefile..."
 if [ -e Makefile ]; then
   \rm Makefile
 fi 
-${echo} "==> Generating Makefile from Makefile.template..."
+${echo} "==> Generating Makefile from Makefile_lf.template..."
 sed \
   -e "s#<FC>#${FC}#g" \
   -e "s#<MPICC>#${MPICC}#g" \
   -e "s#<FFLAGS>#${FFLAGS}#g" \
   -e "s#<CCFLAGS>#${CCFLAGS}#g" \
-  -e "s#<POT3D_CUSPARSE>#${POT3D_CUSPARSE}#g" \
-  -e "s#<HDF5_INCLUDE_DIR>#${HDF5_INCLUDE_DIR}#g" \
-  -e "s#<HDF5_LIB_DIR>#${HDF5_LIB_DIR}#g" \
-  -e "s#<HDF5_LIB_FLAGS>#${HDF5_LIB_FLAGS}#g" \
-  Makefile.template > Makefile
+  Makefile_lf.template > Makefile
 ${echo} "==> Compiling code..."
 make clean 1>/dev/null 2>/dev/null ; make 1>build.log 2>build.err
 if [ ! -e pot3d ]; then
