@@ -43,3 +43,4 @@ if [ ! -f pot3d_cpp.f90 ]; then
 fi
 
 ${FC} -c ${FFLAGS} --implicit-interface pot3d_cpp.f90 --show-asr > /dev/null 2>&1
+rm -f *.mod *.o

@@ -29,6 +29,7 @@ if [ ! -e pot3d ]; then
   exit 1
 fi
 
+rm -f *.mod *.o
 echo "current working directory is: ${PWD}"
 
 echo "POT3D executable created successfully"
