@@ -3,7 +3,7 @@
 # and doesn't use any HDF5
 POT3D_HOME=$PWD
 MPICC=${CONDA_PREFIX}/bin/mpicc
-FC=${FC:-"../src/bin/lfortran"}
+FC="$PWD/../src/bin/lfortran"
 FFLAGS="-lmpi"
 
 echo "==> Using Fortran compiler: " ${FC}
