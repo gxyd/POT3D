@@ -38,11 +38,7 @@ jobs:
         shell: bash -e -x -l {0}
         run: |
           echo "RUNNER_OS is set to: $RUNNER_OS"
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            ./build_examples/build_cpu_mpi-only_gcc_macos_homebrew_lf.sh
-          else
-            ./build_examples/build_cpu_mpi-only_gcc_ubuntu20.04_lf.sh
-          fi
+          ./build_examples/build_cpu_mpi-only_gcc_gfortran.sh
           export PATH=$PWD/bin:$PATH
 
       - name: POT3D Validation
