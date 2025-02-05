@@ -1,4 +1,4 @@
-name: build_pot3d_unmodified_env
+name: pot3d_env
 channels:
   - conda-forge
 dependencies:
