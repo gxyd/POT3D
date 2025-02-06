@@ -1006,21 +1006,21 @@ subroutine read_input_file
               case ("idebug")
                   read(value, *) idebug
               case ("br0file")
-                  read(value, '(A)') br0file
+                  read(value, *) br0file
               case ("phifile")
-                  read(value, '(A)') phifile
+                  read(value, *) phifile
               case ("brfile")
-                  read(value, '(A)') brfile
+                  read(value, *) brfile
               case ("btfile")
-                  read(value, '(A)') btfile
+                  read(value, *) btfile
               case ("bpfile")
-                  read(value, '(A)') bpfile
+                  read(value, *) bpfile
               case ("br_photo_file")
-                  read(value, '(A)') br_photo_file
+                  read(value, *) br_photo_file
               case ("br_photo_original_file")
-                  read(value, '(A)') br_photo_original_file
+                  read(value, *) br_photo_original_file
               case ("option")
-                  read(value, '(A)') option
+                  read(value, *) option
               case ("do_not_balance_flux")
                   read(value, *) do_not_balance_flux
               case ("hdf32")
