@@ -107,6 +107,11 @@ module rdhdf_3d_interface
       end interface
 end module
 !#######################################################################
+module ffopen_MOD
+contains
+! XX: Workaround, we wrapper 'ffopen' subroutine in a module
+! to ensure it isn't a global procedure, as LFortran doesn't
+! currently causes problems with it's compilation
 subroutine ffopen (iun,fname,mode,ierr)
 !
 !-----------------------------------------------------------------------
@@ -174,6 +179,7 @@ subroutine ffopen (iun,fname,mode,ierr)
       ierr=1
 !
 end subroutine
+end module ffopen_MOD
 !#######################################################################
 subroutine rdhdf (fname,s,ierr)
 !

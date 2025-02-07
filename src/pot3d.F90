@@ -643,6 +643,7 @@ program POT3D
 !-----------------------------------------------------------------------
 !
       use ident
+      use ffopen_MOD
       use mpidefs
       use vars
       use solve_params
@@ -814,6 +815,7 @@ subroutine read_input_file
 !-----------------------------------------------------------------------
 !
       use global_dims
+      use ffopen_MOD
       use global_mesh
       use mpidefs
       use meshdef
@@ -6558,6 +6560,7 @@ subroutine write_timing
 !
 !-----------------------------------------------------------------------
 !
+      use ffopen_MOD
       use number_types
       use mpidefs
       use timing
