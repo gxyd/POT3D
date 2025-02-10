@@ -767,17 +767,17 @@ module ffopen_MOD
             ierr=0
       !
             if (mode.eq.'r') then
-            open (iun,file=fname,form="FORMATTED",status='old',err=900)
+            open (iun,file=trim(fname),form="FORMATTED",status='old',err=900)
             else if (mode.eq.'rw') then
-            open (iun,file=fname,form="FORMATTED",status='replace',err=900)
+            open (iun,file=trim(fname),form="FORMATTED",status='replace',err=900)
             else if (mode.eq.'w') then
-            open (iun,file=fname,form="FORMATTED",status='new',err=900)
+            open (iun,file=trim(fname),form="FORMATTED",status='new',err=900)
             elseif (mode.eq.'a') then
-            inquire(file=fname, exist=ex)
+            inquire(file=trim(fname), exist=ex)
             if (ex) then
-            open (iun,file=fname,form="FORMATTED",position='append',err=900)
+            open (iun,file=trim(fname),form="FORMATTED",position='append',err=900)
             else
-            open (iun,file=fname,form="FORMATTED",status='new',err=900)
+            open (iun,file=trim(fname),form="FORMATTED",status='new',err=900)
             end if
             else
             write (*,*)
