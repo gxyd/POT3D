@@ -15,5 +15,5 @@ ${FC} -c mpi_c_bindings.f90
 ${FC} -c mpi.f90
 ${FC} -c psi_io.f90
 ${FC} -c --cpp --implicit-interface pot3d.F90
-# ${FC} mpi_wrapper.o mpi_c_bindings.o mpi.o psi_io.o pot3d.o -o pot3d -L$CONDA_PREFIX/lib -lmpi
-# cp pot3d ../bin/
+${FC} mpi_wrapper.o mpi_c_bindings.o mpi.o psi_io.o pot3d.o -o pot3d -L$CONDA_PREFIX/lib -lmpi
+cp pot3d ../bin/
