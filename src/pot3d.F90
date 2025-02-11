@@ -1024,6 +1024,8 @@ subroutine read_input_file
               case ("br_photo_original_file")
                   read(value, *) br_photo_original_file
               case ("option")
+                  ! XX: workaround by hard-coding the value of 'option'
+                  ! TODO: fix https://github.com/lfortran/lfortran/issues/6288
                   ! read(value, *) option
                   option = 'ss'
               case ("do_not_balance_flux")
