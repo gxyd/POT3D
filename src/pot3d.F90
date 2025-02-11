@@ -800,7 +800,7 @@ program POT3D
         write (*,*)
         write (*,*) '### COMMENT from POT3D:'
         write (*,*) '### Starting PCG solve.'
-        call FLUSH(OUTPUT_UNIT)
+      !   call FLUSH(OUTPUT_UNIT)
         write (9,*)
         write (9,*) '### COMMENT from POT3D:'
         write (9,*) '### Starting PCG solve.'
@@ -4485,7 +4485,7 @@ subroutine ernorm (bdotb,rdotr,ierr)
               write (*,*)
             end if
             write (*,100) ncg,epsn
-            FLUSH(OUTPUT_UNIT)
+            ! FLUSH(OUTPUT_UNIT)
             write (9,100) ncg,epsn
             FLUSH(9)
   100       format (1x,'Iteration: ',i8,'   Residual: ',1pe23.15)
@@ -4499,7 +4499,7 @@ subroutine ernorm (bdotb,rdotr,ierr)
         if (ncghist.gt.0) then
           if (iamp0) then
             write (*,100) ncg,epsn
-            FLUSH(OUTPUT_UNIT)
+            ! FLUSH(OUTPUT_UNIT)
             write (9,*)
             write (9,*) '### The CG solver has converged.'
             write (9,100) ncg,epsn
@@ -4514,7 +4514,7 @@ subroutine ernorm (bdotb,rdotr,ierr)
           write (*,*) '### Exceeded maximum number of iterations.'
           write (*,*) 'NCGMAX = ',ncgmax
           write (*,*) 'EPSN = ',epsn
-          FLUSH(OUTPUT_UNIT)
+      !     FLUSH(OUTPUT_UNIT)
           write (9,*)
           write (9,*) '### ERROR in ERNORM:'
           write (9,*) '### Exceeded maximum number of iterations.'
