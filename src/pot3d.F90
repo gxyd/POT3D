@@ -364,10 +364,38 @@ module meshdef
 !
       integer, parameter :: nmseg=30
 !
-      real(r_typ), dimension(nmseg) :: drratio=0.
-      real(r_typ), dimension(nmseg) :: dtratio=0.
-      real(r_typ), dimension(nmseg) :: dpratio=0.
-      real(r_typ), dimension(nmseg) :: rfrac=0.
+      real(r_typ), dimension(nmseg) :: drratio=[2.5_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ]
+      real(r_typ), dimension(nmseg) :: dtratio=[1.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ]
+      real(r_typ), dimension(nmseg) :: dpratio=[1.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ]
+      real(r_typ), dimension(nmseg) :: rfrac = [0.0_r_typ, 1.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
+                                                0.0_r_typ, 0.0_r_typ]
       real(r_typ), dimension(nmseg) :: tfrac=0.
       real(r_typ), dimension(nmseg) :: pfrac=0.
 !
@@ -460,18 +488,18 @@ module vars
       implicit none
 !
       character(256) :: outfile='pot3d.out'
-      character(256) :: phifile='default'
-      character(256) :: br0file='default'
-      character(256) :: brfile='default'
-      character(256) :: btfile='default'
-      character(256) :: bpfile='default'
-      character(256) :: br_photo_file='default'
+      character(256) :: phifile=''
+      character(256) :: br0file='br_input_tiny_bin.bin'
+      character(256) :: brfile=''
+      character(256) :: btfile=''
+      character(256) :: bpfile=''
+      character(256) :: br_photo_file=''
       character(256) :: br_photo_original_file='default'
 !
 ! ****** Type of field solution.
 ! ****** Select between 'potential', 'open', and 'source-surface'.
 !
-      character(16) :: option='potential'
+      character(16) :: option='ss'
 !
 ! ****** Interval at which to dump diagonstics during the
 ! ****** iteration for the source-surface plus current-sheet
@@ -956,41 +984,41 @@ subroutine read_input_file
               case ("r1")
                   read(value, *) r1
               case ("drratio")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (drratio(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (drratio(i), i = 1, n_values)
               case ("dtratio")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (dtratio(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (dtratio(i), i = 1, n_values)
               case ("dpratio")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (dpratio(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (dpratio(i), i = 1, n_values)
               case ("rfrac")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (rfrac(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (rfrac(i), i = 1, n_values)
               case ("tfrac")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (tfrac(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (tfrac(i), i = 1, n_values)
               case ("pfrac")
-                  n_values = 1
-                  do i = 1, len_trim(value)
-                      if (value(i:i) == ',') n_values = n_values + 1
-                  end do
-                  read(value, *, iostat=ierr) (pfrac(i), i = 1, n_values)
+                  ! n_values = 1
+                  ! do i = 1, len_trim(value)
+                  !     if (value(i:i) == ',') n_values = n_values + 1
+                  ! end do
+                  ! read(value, *, iostat=ierr) (pfrac(i), i = 1, n_values)
               case ("nfrmesh")
                   read(value, *) nfrmesh
               case ("nftmesh")
@@ -1010,24 +1038,21 @@ subroutine read_input_file
               case ("idebug")
                   read(value, *) idebug
               case ("br0file")
-                  read(value, *) br0file
+                  ! read(value, *) br0file
               case ("phifile")
-                  read(value, *) phifile
+                  ! read(value, *) phifile
               case ("brfile")
-                  read(value, *) brfile
+                  ! read(value, *) brfile
               case ("btfile")
-                  read(value, *) btfile
+                  ! read(value, *) btfile
               case ("bpfile")
-                  read(value, *) bpfile
+                  ! read(value, *) bpfile
               case ("br_photo_file")
-                  read(value, *) br_photo_file
+                  ! read(value, *) br_photo_file
               case ("br_photo_original_file")
                   read(value, *) br_photo_original_file
               case ("option")
-                  ! XX: workaround by hard-coding the value of 'option'
-                  ! TODO: fix https://github.com/lfortran/lfortran/issues/6288
                   ! read(value, *) option
-                  option = 'ss'
               case ("do_not_balance_flux")
                   read(value, *) do_not_balance_flux
               case ("hdf32")
