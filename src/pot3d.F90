@@ -1024,7 +1024,8 @@ subroutine read_input_file
               case ("br_photo_original_file")
                   read(value, *) br_photo_original_file
               case ("option")
-                  read(value, *) option
+                  ! read(value, *) option
+                  option = 'ss'
               case ("do_not_balance_flux")
                   read(value, *) do_not_balance_flux
               case ("hdf32")
