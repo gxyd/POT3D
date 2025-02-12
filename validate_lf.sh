@@ -1,4 +1,4 @@
-#!/bin/bash
+set -ex
 
 POT3D_HOME=$PWD
 TEST="validation"
