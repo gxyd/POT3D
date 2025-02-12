@@ -1,12 +1,12 @@
 set -ex
 
 if [[ "$(uname)" == "Linux" ]]; then
-  CC=gcc
+  CC=${CONDA_PREFIX}/bin/gcc
 else
-  CC=clang
+  CC=${CONDA_PREFIX}/bin/clang
 fi
 
-FC=gfortran
+FC=${CONDA_PREFIX}/bin/gfortran
 
 cd src
 ${CC} -I$CONDA_PREFIX/include -c mpi_wrapper.c

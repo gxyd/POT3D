@@ -1,9 +1,9 @@
 set -ex
 
 if [[ "$(uname)" == "Linux" ]]; then
-  CC=gcc
+  CC=${CONDA_PREFIX}/bin/gcc
 else
-  CC=clang
+  CC=${CONDA_PREFIX}/bin/clang
 fi
 
 FC=lfortran
