@@ -6759,6 +6759,7 @@ subroutine readbr (fname,br0_g,ierr)
 !
       character(*) :: fname
       real(r_typ), dimension(nt_g,np_g) :: br0_g
+      real(r_typ), dimension(:, :), allocatable :: f
       integer :: ierr
 !
 !-----------------------------------------------------------------------
@@ -6813,10 +6814,14 @@ subroutine readbr (fname,br0_g,ierr)
 !
 ! ****** Interpolate the field to the code mesh (into array BR0_G).
 !
+      ! TODO: XX: remove the workaround
+      allocate(f(ntm1_g - 1, npm1_g-1))
+      f = br0_g(2:ntm1_g, 2:npm1_g)
       call intrp2d (ntn,npn,tn,pn,bn, &
                     nt_g-2,np_g-2,th_g(2:ntm1_g),ph_g(2:npm1_g), &
-                    br0_g(2:ntm1_g,2:npm1_g),ierr)
+                    f,ierr)
 !
+      br0_g(2:ntm1_g, 2:npm1_g) = f
       if (ierr.ne.0) then
         write (*,*)
         write (*,*) '### ERROR in READBR:'
