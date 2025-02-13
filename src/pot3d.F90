@@ -5804,6 +5804,9 @@ subroutine seam_hhh (a)
 !
       lbuf=nr*nt
 !
+      ! [XX: This print statement removes segfault which is wierd but good workaround for now]
+      print *,"Dummy print statement with bounds od a", lbound(a), ubound(a)
+
 !$omp target data use_device_ptr(a)
       call MPI_Isend (a(:,:,np-1),lbuf,ntype_real,iproc_pp,tag, &
                       comm_all,reqs(1),ierr)
