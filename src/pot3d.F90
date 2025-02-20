@@ -665,6 +665,26 @@ module matrix_storage_pot3d_solve
       integer, dimension(:), allocatable :: a_csr_dptr
 !
 end module
+
+module lfortran_workaround_util
+      use number_types
+      implicit none
+      contains
+      function cshift_with_minus_one_shift(arr) result(shifted_arr)
+            implicit none
+            real(r_typ), dimension(:), intent(in) :: arr
+            real(r_typ), dimension(size(arr)) :: shifted_arr
+            integer :: n, i
+
+            n = size(arr)
+            if (n > 1) then
+                shifted_arr(1:n-1) = arr(2:n)
+                shifted_arr(n) = arr(1)
+            else
+                shifted_arr = arr
+            end if
+        end function cshift_with_minus_one_shift
+end module
 !#######################################################################
 program POT3D
 !
@@ -3016,6 +3036,7 @@ subroutine genmesh (io,label,nc,c0,c1,nseg,frac,dratio,nfilt,periodic, &
       use number_types
       use mpidefs
       use debug
+      use lfortran_workaround_util, only: cshift_with_minus_one_shift
 !
 !-----------------------------------------------------------------------
 !
@@ -3380,9 +3401,9 @@ subroutine genmesh (io,label,nc,c0,c1,nseg,frac,dratio,nfilt,periodic, &
         allocate (dc(nc))
         allocate (rdc(nc))
 !
-        dc=c-cshift(c,-1)
+        dc=c-cshift_with_minus_one_shift(c)
         if (periodic) dc(1)=dc(nc)
-        rdc=dc/cshift(dc,-1)
+        rdc=dc/cshift_with_minus_one_shift(dc)
         if (periodic) rdc(1)=rdc(nc)
 !
         write (io,*)
