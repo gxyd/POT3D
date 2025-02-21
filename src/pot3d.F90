@@ -966,6 +966,7 @@ subroutine read_input_file
 
             ! remove leading and trailing quotes (if present)
             if (value /= "''") then
+                  print *, 'entered'
                   if (value(1:1) == "'") value = value(2:)
                   if (value(len_trim(value):len_trim(value)) == "'") value = value(1:len_trim(value)-1)
             end if
