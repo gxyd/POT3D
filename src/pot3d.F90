@@ -364,30 +364,9 @@ module meshdef
 !
       integer, parameter :: nmseg=30
 !
-      real(r_typ), dimension(nmseg) :: drratio=[2.5_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ]
-      real(r_typ), dimension(nmseg) :: dtratio=[1.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ]
-      real(r_typ), dimension(nmseg) :: dpratio=[1.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ]
+      real(r_typ), dimension(nmseg) :: drratio=0.
+      real(r_typ), dimension(nmseg) :: dtratio=0.
+      real(r_typ), dimension(nmseg) :: dpratio=0.
       real(r_typ), dimension(nmseg) :: rfrac = [0.0_r_typ, 1.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
                                                 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
                                                 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
@@ -985,41 +964,19 @@ subroutine read_input_file
               case ("r1")
                   read(value, *) r1
               case ("drratio")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (drratio(i), i = 1, n_values)
+                  read(value, *, iostat=ierr) drratio(1)
               case ("dtratio")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (dtratio(i), i = 1, n_values)
+                  read(value, *, iostat=ierr) dtratio(1)
               case ("dpratio")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (dpratio(i), i = 1, n_values)
+                  read(value, *, iostat=ierr) dpratio(1)
               case ("rfrac")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (rfrac(i), i = 1, n_values)
+                  pos_eq = index(value, ",")
+                  read(value(1:pos_eq-1), *) rfrac(1)
+                  read(value(pos_eq+1:), *) rfrac(2)
               case ("tfrac")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (tfrac(i), i = 1, n_values)
+                  read(value, *, iostat=ierr) tfrac(1)
               case ("pfrac")
-                  ! n_values = 1
-                  ! do i = 1, len_trim(value)
-                  !     if (value(i:i) == ',') n_values = n_values + 1
-                  ! end do
-                  ! read(value, *, iostat=ierr) (pfrac(i), i = 1, n_values)
+                  read(value, *, iostat=ierr) pfrac(1)
               case ("nfrmesh")
                   read(value, *) nfrmesh
               case ("nftmesh")
