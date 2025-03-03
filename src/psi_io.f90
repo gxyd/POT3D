@@ -68,12 +68,14 @@ module rdhdf_1d_interface
         subroutine rdhdf_1d (fname,scale,nx,f,x,ierr)
         use iso_fortran_env
         implicit none
-        character(*), intent(in) :: fname
-        logical, intent(out) :: scale
-        integer, intent(out) :: nx
+        character(*) :: fname
+        logical :: scale
+        integer :: nx
         real(REAL64), dimension(:), pointer :: f
         real(REAL64), dimension(:), pointer :: x
-        integer, intent(out) :: ierr
+        integer :: ierr
+        intent(in) :: fname
+        intent(out) :: scale,nx,ierr
         end subroutine
       end interface
 end module
@@ -595,11 +597,13 @@ module rdhdf_MOD
       !
       !-----------------------------------------------------------------------
       !
-            character(*), intent(in) :: fname
+            character(*) :: fname
             character, dimension(256) :: sds_name, dim_name
-            type(sds), intent(out) :: s
+            type(sds) :: s
             integer :: i,i_bin
-            integer, intent(out) :: ierr
+            integer :: ierr
+            intent(in) :: fname
+            intent(out) :: s,ierr
       !
       !-----------------------------------------------------------------------
       !
@@ -661,13 +665,15 @@ module rdhdf_2d_interface
       !
       !-----------------------------------------------------------------------
       !
-            character(*), intent(in) :: fname
-            logical, intent(out) :: scale
-            integer, intent(out) :: nx,ny
+            character(*) :: fname
+            logical :: scale
+            integer :: nx,ny
             integer :: i
             real(REAL64), dimension(:,:), pointer :: f
             real(REAL64), dimension(:), pointer :: x,y
-            integer, intent(out) :: ierr
+            integer :: ierr
+            intent(in) :: fname
+            intent(out) :: scale,nx,ny,ierr
       !
       !-----------------------------------------------------------------------
       !
@@ -719,12 +725,14 @@ module rdhdf_3d_interface
         subroutine rdhdf_3d (fname,scale,nx,ny,nz,f,x,y,z,ierr)
         use iso_fortran_env
         implicit none
-        character(*), intent(in) :: fname
-        logical, intent(out) :: scale
-        integer, intent(out) :: nx,ny,nz
+        character(*) :: fname
+        logical :: scale
+        integer :: nx,ny,nz
         real(REAL64), dimension(:,:,:), pointer :: f
         real(REAL64), dimension(:), pointer :: x,y,z
-        integer, intent(out) :: ierr
+        integer :: ierr
+        intent(in) :: fname
+        intent(out) :: scale,nx,ny,nz,ierr
         end subroutine
       end interface
 end module
