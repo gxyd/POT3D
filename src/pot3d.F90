@@ -367,14 +367,7 @@ module meshdef
       real(r_typ), dimension(nmseg) :: drratio=0.
       real(r_typ), dimension(nmseg) :: dtratio=0.
       real(r_typ), dimension(nmseg) :: dpratio=0.
-      real(r_typ), dimension(nmseg) :: rfrac = [0.0_r_typ, 1.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ, 0.0_r_typ, 0.0_r_typ, &
-                                                0.0_r_typ, 0.0_r_typ]
+      real(r_typ), dimension(nmseg) :: rfrac = 0.
       real(r_typ), dimension(nmseg) :: tfrac=0.
       real(r_typ), dimension(nmseg) :: pfrac=0.
 !
@@ -478,7 +471,7 @@ module vars
 ! ****** Type of field solution.
 ! ****** Select between 'potential', 'open', and 'source-surface'.
 !
-      character(16) :: option='ss'
+      character(16) :: option='potential'
 !
 ! ****** Interval at which to dump diagonstics during the
 ! ****** iteration for the source-surface plus current-sheet
@@ -1009,7 +1002,7 @@ subroutine read_input_file
               case ("br_photo_original_file")
                   read(value, *) br_photo_original_file
               case ("option")
-                  ! read(value, *) option
+                  read(value, *) option
               case ("do_not_balance_flux")
                   read(value, *) do_not_balance_flux
               case ("hdf32")
