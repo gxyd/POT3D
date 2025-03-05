@@ -467,12 +467,12 @@ module vars
       implicit none
 !
       character(256) :: outfile='pot3d.out'
-      character(256) :: phifile=''
-      character(256) :: br0file='br_input_tiny_bin.bin'
-      character(256) :: brfile=''
-      character(256) :: btfile=''
-      character(256) :: bpfile=''
-      character(256) :: br_photo_file=''
+      character(256) :: phifile='default'
+      character(256) :: br0file='default'
+      character(256) :: brfile='default'
+      character(256) :: btfile='default'
+      character(256) :: bpfile='default'
+      character(256) :: br_photo_file='default'
       character(256) :: br_photo_original_file='default'
 !
 ! ****** Type of field solution.
@@ -995,17 +995,17 @@ subroutine read_input_file
               case ("idebug")
                   read(value, *) idebug
               case ("br0file")
-                  ! read(value, *) br0file
+                  read(value, *) br0file
               case ("phifile")
-                  ! read(value, *) phifile
+                  read(value, *) phifile
               case ("brfile")
-                  ! read(value, *) brfile
+                  read(value, *) brfile
               case ("btfile")
-                  ! read(value, *) btfile
+                  read(value, *) btfile
               case ("bpfile")
-                  ! read(value, *) bpfile
+                  read(value, *) bpfile
               case ("br_photo_file")
-                  ! read(value, *) br_photo_file
+                  read(value, *) br_photo_file
               case ("br_photo_original_file")
                   read(value, *) br_photo_original_file
               case ("option")
