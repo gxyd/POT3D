@@ -56,8 +56,7 @@ module sds_def
         integer, dimension(mxdim) :: dims
         logical :: scale
         logical :: hdf32
-      !   type(rp1d), dimension(mxdim) :: scales
-        real(REAL64), dimension(:,:), pointer :: scales
+        type(rp1d), dimension(mxdim) :: scales
         real(REAL64), dimension(:,:,:), pointer, contiguous :: f
       end type
 !
@@ -201,8 +200,6 @@ module rdh5_MOD
             real(REAL32), dimension(:),     allocatable :: f4dim
             real(REAL64), dimension(:,:,:), allocatable :: f8
             real(REAL64), dimension(:),     allocatable :: f8dim
-            ! [XX: Get the max of the s_dims array]
-            integer :: s_dims_max = 0
       !
             character(512) :: obj_name
             character(4), parameter :: cname='RDH5'
@@ -303,10 +300,7 @@ module rdh5_MOD
             ! s%dims(j) = INT(s_dims(j))
             ! [XX: Binary file read]
             s%dims(j) = INT(s_dims_bin(j))
-            if (s%dims(j)>s_dims_max) s_dims_max = s%dims(j)
             end do
-            ! [XX: Allocate whole 2D array at Once with s_dims_max for each row]
-            allocate (s%scales(n_members-1,s_dims_max))
       !
       ! ****** Get the floating-point precision of the data and set flag.
       !
@@ -430,8 +424,7 @@ module rdh5_MOD
       !
       ! ****** Allocate scale.
       !          
-            ! [XX: Explanation given at Line no. 306]
-            ! allocate (s%scales(i)%f(s_dims_i_bin(1)))
+            allocate (s%scales(i)%f(s_dims_i_bin(1)))
       !
       ! ****** Get the floating-point precision of the scale.
       !
@@ -454,8 +447,7 @@ module rdh5_MOD
                   ! [XX: Binary file read]
                   read(file_unit) f4dim
                   do j=1,s%dims(i)
-                  ! s%scales(i)%f(j) = REAL(f4dim(j),REAL64)
-                  s%scales(i,j) = REAL(f4dim(j),REAL64)
+                  s%scales(i)%f(j) = REAL(f4dim(j),REAL64)
                   end do
                   deallocate (f4dim)
             elseif (prec.eq.64) then
@@ -467,8 +459,7 @@ module rdh5_MOD
                   ! [XX: Binary file read]
                   read(file_unit) f8dim
                   do j=1,s%dims(i)
-                  ! s%scales(i)%f(j) = REAL(f8dim(j),REAL64)
-                  s%scales(i,j) = REAL(f8dim(j),REAL64)
+                  s%scales(i)%f(j) = REAL(f8dim(j),REAL64)
                   end do
                   deallocate (f8dim)
             end if
@@ -483,8 +474,7 @@ module rdh5_MOD
       ! ****** Allocate dummy scales (of length 1) for empty dimensions.
       !
             do i=s%ndim+1,3
-                  ! [XX: No Need of allocating again]
-                  ! allocate (s%scales(i)%f(1))
+            allocate (s%scales(i)%f(1))
             enddo
             else
       !
@@ -494,11 +484,9 @@ module rdh5_MOD
       !
             s%scale = .false.
       !     
-            ! allocate (s%scales(1)%f(1))
-            ! allocate (s%scales(2)%f(1))
-            ! allocate (s%scales(3)%f(1))
-            ! [XX: Allocate all dimensions at once as we have 2D array]
-            allocate (s%scales(3,1))
+            allocate (s%scales(1)%f(1))
+            allocate (s%scales(2)%f(1))
+            allocate (s%scales(3)%f(1))
             end if
       !
       ! ****** Close the dataset.
@@ -706,12 +694,8 @@ module rdhdf_2d_interface
             nx=s%dims(1)
             ny=s%dims(2)
             scale=s%scale
-            ! x=>s%scales(1)%f
-            ! y=>s%scales(2)%f
-            ! [XX: Allocate First and then copy the elements of s%scales to x and y dimensions]
-            allocate(x(nx), y(ny))
-            x = s%scales(1,1:nx)
-            y = s%scales(2,1:ny)
+            x=>s%scales(1)%f
+            y=>s%scales(2)%f
       !
             allocate (f(nx,ny))
             f(:,:)=s%f(:,:,1)
