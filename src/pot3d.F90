@@ -806,178 +806,281 @@ program POT3D
 end program pot3d
 !#######################################################################
 subroutine read_input_file
-!
-!-----------------------------------------------------------------------
-!
-! ****** Read the input file.
-!
-!-----------------------------------------------------------------------
-!
-      use global_dims
-      use global_mesh
-      use mpidefs
-      use meshdef
-      use cgcom
-      use debug
-      use vars
-      use decomposition_params
-!
-!-----------------------------------------------------------------------
-!
-      implicit none
-!
-!-----------------------------------------------------------------------
-!
-! ****** Values for the global mesh size.
-! ****** Since these names conflict with those in LOCAL_DIMS*, it is
-! ****** important not to use these modules here.
-!
-      integer :: nr=0
-      integer :: nt=0
-      integer :: np=0
-!
-!-----------------------------------------------------------------------
-!
-      namelist /topology/ &
-        nprocs,           &! MPI topology triplet.  Default -1,-1,-1
-                           !   automatically sets "best" topology.
-        nr,               &! Grid resolution in the `r` direction.
-        nt,               &! Grid resolution in the `theta` direction.
-        np                 ! Grid resolution in the `phi` direction.
-!
-!-----------------------------------------------------------------------
-!
-      namelist /inputvars/       &
-        r0,                      &! Lower radial boundary.
-        r1,                      &! Upper radial boundary.
-        drratio,                 &! Ratio of grid spacing at the end
-                                  ! of each segment to that at the
-                                  ! beginning for the radial grid
-                                  ! [ length(drratio) = length(rfrac)-1 ].
-        dtratio,                 &! Ratio of grid spacing (theta)
-        dpratio,                 &! Ratio of grid spacing (phi)
-        rfrac,                   &! Normalized positions of grid segment
-                                  ! boundaries (frac of domain size)
-                                  ! for radial grid.
-        tfrac,                   &! Normalized positions of grid (theta)
-        pfrac,                   &! Normalized positions of grid (phi)
-        nfrmesh,                 &! Number of times to filter/smooth
-                                  ! the radial grid spacing.
-        nftmesh,                 &! Number of times to filter (theta)
-        nfpmesh,                 &! Number of times to filter (phi)
-        phishift,                &! Apply an optional phi shift
-                                  ! (radians) to the input Br at r0.
-        ifprec,                  &! Preconditioner method:
-                                  !  1: Diagonal (use for GPU runs)
-                                  !  2: ILU0     (use for CPU runs or
-                                  !   GPU runs when built with cusparse)
-        ncgmax,                  &! Maximum alowed solver iterations.
-        ncghist,                 &! Iteration information.
-                                  !  0: Only write # total iterations.
-                                  ! >0: Write every NCGHIST iteration.
-        epscg,                   &! Solver convergence tolerance,
-                                  !|residual|/|right-hand-side|.
-        idebug,                  &! Output debugging info during run.
-        br0file,                 &! Filename of input 2D (tp) Br
-        phifile,                 &! Filename to write 3D PHI potential.
-        brfile,                  &! Filename to write 3D Br field.
-        btfile,                  &! Filename to write 3D Bt field.
-        bpfile,                  &! Filename to write 3D Bp field.
-        br_photo_file,           &! Filename to write 2D Br@r=r0
-                                  !(after interp/flux-balance).
-        br_photo_original_file,  &! Filename to write 2D Br@r=r0
-                                  ! (option='open' only, writes Br
-                                  !  before sign change).
-        option,                  &!  'ss'        PFSS
-                                  !  'potential' PF with closed-wall
-                                  !              (requires flux balance).
-                                  !  'open'      Open field. Used for
-                                  !              current sheet and fully
-                                  !              open field runs.
-                                  !              B field will be unsigned.
-        do_not_balance_flux,     &! Do not balance flux of input Br@r0.
-        hdf32,                   &! Output precision:
-                                  !  .true.   Single (32-bit) output.
-                                  !  .false.  Double (64-bit) output.
-        validation_run,          &!  Set this to run a validation test
-                                  ! with an analytic tilted dipole
-                                  ! solution. Overrides other inputs.
-        dipole_angle              ! Tilt angle for validation run dipole.
-!
-!-----------------------------------------------------------------------
-!
-      integer :: ierr
-      character(80) :: infile='pot3d.dat'
-!
-!-----------------------------------------------------------------------
-!
-! ****** Read the input file.
-!
-      call ffopen (8,infile,'r',ierr)
-!
-      if (ierr.ne.0) then
-        if (iamp0) then
-          write (*,*)
-          write (*,*) '### ERROR in READ_INPUT_FILE:'
-          write (*,*) '### Could not open the input file.'
-          write (*,*) 'File name: ',trim(infile)
-        end if
-        call endrun (.true.)
-      end if
-!
-      read (8,topology)
-!
-      read (8,inputvars)
-!
-      close (8)
-!
-      if (trim(fmt).ne.'h5') then
-        if (iamp0) then
-          write (*,*)
-          write (*,*) '### ERROR in READ_INPUT_FILE:'
-          write (*,*) '### "fmt" must be "h5".'
-          write (*,*) 'fmt: ',trim(fmt)
-        end if
-        call endrun (.true.)
-      end if
-!
-! ****** Check if output names were overwritten.
-! ****** If not, set default names with format fmt.
-!
-      if (trim(phifile).eq.'default') then
-        phifile='phi.'//trim(fmt)
-      end if
-      if (trim(br0file).eq.'default') then
-        br0file='br0.'//trim(fmt)
-      end if
-      if (trim(brfile).eq.'default') then
-        brfile='br.'//trim(fmt)
-      end if
-      if (trim(btfile).eq.'default') then
-        btfile='bt.'//trim(fmt)
-      end if
-      if (trim(bpfile).eq.'default') then
-        bpfile='bp.'//trim(fmt)
-      end if
-      if (trim(br_photo_file).eq.'default') then
-        br_photo_file='br_photo.'//trim(fmt)
-      end if
-      if (trim(br_photo_original_file).eq.'default') then
-        br_photo_original_file='br_photo_original.'//trim(fmt)
-      end if
-!
-      nr_g=nr
-      nt_g=nt
-      np_g=np
-!
-! ****** Check if the specified mesh dimensions are valid.
-!
-      call check_mesh_dimensions (nr_g,nt_g,np_g)
-!
-      nrm1_g=nr_g-1
-      ntm1_g=nt_g-1
-      npm1_g=np_g-1
-!
+      !
+      !-----------------------------------------------------------------------
+      !
+      ! ****** Read the input file.
+      !
+      !-----------------------------------------------------------------------
+      !
+            use global_dims
+            use ffopen_MOD
+            use global_mesh
+            use mpidefs
+            use meshdef
+            use cgcom
+            use debug
+            use vars
+            use decomposition_params
+      !
+      !-----------------------------------------------------------------------
+      !
+            implicit none
+      !
+      !-----------------------------------------------------------------------
+      !
+      ! ****** Values for the global mesh size.
+      ! ****** Since these names conflict with those in LOCAL_DIMS*, it is
+      ! ****** important not to use these modules here.
+      !
+            integer :: nr=0
+            integer :: nt=0
+            integer :: np=0
+
+            ! [XX: namelist not supported in LFortran compiler]
+      !
+      !-----------------------------------------------------------------------
+      !
+      !       namelist /topology/ &
+      !         nprocs,           &! MPI topology triplet.  Default -1,-1,-1
+      !                            !   automatically sets "best" topology.
+      !         nr,               &! Grid resolution in the `r` direction.
+      !         nt,               &! Grid resolution in the `theta` direction.
+      !         np                 ! Grid resolution in the `phi` direction.
+      ! !
+      ! !-----------------------------------------------------------------------
+      ! !
+      !       namelist /inputvars/       &
+      !         r0,                      &! Lower radial boundary.
+      !         r1,                      &! Upper radial boundary.
+      !         drratio,                 &! Ratio of grid spacing at the end
+      !                                   ! of each segment to that at the
+      !                                   ! beginning for the radial grid
+      !                                   ! [ length(drratio) = length(rfrac)-1 ].
+      !         dtratio,                 &! Ratio of grid spacing (theta)
+      !         dpratio,                 &! Ratio of grid spacing (phi)
+      !         rfrac,                   &! Normalized positions of grid segment
+      !                                   ! boundaries (frac of domain size)
+      !                                   ! for radial grid.
+      !         tfrac,                   &! Normalized positions of grid (theta)
+      !         pfrac,                   &! Normalized positions of grid (phi)
+      !         nfrmesh,                 &! Number of times to filter/smooth
+      !                                   ! the radial grid spacing.
+      !         nftmesh,                 &! Number of times to filter (theta)
+      !         nfpmesh,                 &! Number of times to filter (phi)
+      !         phishift,                &! Apply an optional phi shift
+      !                                   ! (radians) to the input Br at r0.
+      !         ifprec,                  &! Preconditioner method:
+      !                                   !  1: Diagonal (use for GPU runs)
+      !                                   !  2: ILU0     (use for CPU runs or
+      !                                   !   GPU runs when built with cusparse)
+      !         ncgmax,                  &! Maximum alowed solver iterations.
+      !         ncghist,                 &! Iteration information.
+      !                                   !  0: Only write # total iterations.
+      !                                   ! >0: Write every NCGHIST iteration.
+      !         epscg,                   &! Solver convergence tolerance,
+      !                                   !|residual|/|right-hand-side|.
+      !         idebug,                  &! Output debugging info during run.
+      !         br0file,                 &! Filename of input 2D (tp) Br
+      !         phifile,                 &! Filename to write 3D PHI potential.
+      !         brfile,                  &! Filename to write 3D Br field.
+      !         btfile,                  &! Filename to write 3D Bt field.
+      !         bpfile,                  &! Filename to write 3D Bp field.
+      !         br_photo_file,           &! Filename to write 2D Br@r=r0
+      !                                   !(after interp/flux-balance).
+      !         br_photo_original_file,  &! Filename to write 2D Br@r=r0
+      !                                   ! (option='open' only, writes Br
+      !                                   !  before sign change).
+      !         option,                  &!  'ss'        PFSS
+      !                                   !  'potential' PF with closed-wall
+      !                                   !              (requires flux balance).
+      !                                   !  'open'      Open field. Used for
+      !                                   !              current sheet and fully
+      !                                   !              open field runs.
+      !                                   !              B field will be unsigned.
+      !         do_not_balance_flux,     &! Do not balance flux of input Br@r0.
+      !         hdf32,                   &! Output precision:
+      !                                   !  .true.   Single (32-bit) output.
+      !                                   !  .false.  Double (64-bit) output.
+      !         validation_run,          &!  Set this to run a validation test
+      !                                   ! with an analytic tilted dipole
+      !                                   ! solution. Overrides other inputs.
+      !         dipole_angle              ! Tilt angle for validation run dipole.
+      !
+      !-----------------------------------------------------------------------
+      !
+            integer :: i
+            integer :: pos_eq     ! tracks position of "=" sign in pot3d.dat file
+            integer :: ierr
+            integer :: n_values   ! number of values in a comma-separated list
+            character(80) :: infile='pot3d.dat'
+            character(80) :: line
+            character(20) :: key
+            character(60) :: value
+      !
+      !-----------------------------------------------------------------------
+      !
+      ! ****** Read the input file.
+      !
+            call ffopen (8,infile,'r',ierr)
+      !
+            do
+              read(8, '(A)', iostat=ierr) line
+              if (ierr /= 0) then
+                  ierr = 0  ! this assigns that no error occured
+                  exit      ! we've reached end of file
+              end if
+                pos_eq = index(line, '=')
+                if (pos_eq > 0) then
+                  key = adjustl(line(1:pos_eq - 1))
+                  value = adjustl(line(pos_eq + 1:))
+
+                  ! remove leading and trailing quotes (if present)
+                  if (value /= "''") then
+                        if (value(1:1) == "'") value = value(2:)
+                        if (value(len_trim(value):len_trim(value)) == "'") value = value(1:len_trim(value)-1)
+                  end if
+
+                  select case (trim(key))
+                    case ("nprocs")
+                        read(value, *) nprocs
+                    case ("nr")
+                        read(value, *) nr
+                    case ("nt")
+                        read(value, *) nt
+                    case ("np")
+                        read(value, *) np
+                    case ("r0")
+                        read(value, *) r0
+                    case ("r1")
+                        read(value, *) r1
+                    case ("drratio")
+                        read(value, *, iostat=ierr) drratio(1)
+                    case ("dtratio")
+                        read(value, *, iostat=ierr) dtratio(1)
+                    case ("dpratio")
+                        read(value, *, iostat=ierr) dpratio(1)
+                    case ("rfrac")
+                        pos_eq = index(value, ",")
+                        read(value(1:pos_eq-1), *) rfrac(1)
+                        read(value(pos_eq+1:), *) rfrac(2)
+                    case ("tfrac")
+                        read(value, *, iostat=ierr) tfrac(1)
+                    case ("pfrac")
+                        read(value, *, iostat=ierr) pfrac(1)
+                    case ("nfrmesh")
+                        read(value, *) nfrmesh
+                    case ("nftmesh")
+                        read(value, *) nftmesh
+                    case ("nfpmesh")
+                        read(value, *) nfpmesh
+                    case ("phishift")
+                        read(value, *) phishift
+                    case ("ifprec")
+                        read(value, *) ifprec
+                    case ("ncgmax")
+                        read(value, *) ncgmax
+                    case ("ncghist")
+                        read(value, *) ncghist
+                    case ("epscg")
+                        read(value, *) epscg
+                    case ("idebug")
+                        read(value, *) idebug
+                    case ("br0file")
+                        read(value, *) br0file
+                    case ("phifile")
+                        read(value, *) phifile
+                    case ("brfile")
+                        read(value, *) brfile
+                    case ("btfile")
+                        read(value, *) btfile
+                    case ("bpfile")
+                        read(value, *) bpfile
+                    case ("br_photo_file")
+                        read(value, *) br_photo_file
+                    case ("br_photo_original_file")
+                        read(value, *) br_photo_original_file
+                    case ("option")
+                        read(value, *) option
+                    case ("do_not_balance_flux")
+                        read(value, *) do_not_balance_flux
+                    case ("hdf32")
+                        read(value, *) hdf32
+                    case ("validation_run")
+                        read(value, *) validation_run
+                    case ("dipole_angle")
+                        read(value, *) dipole_angle
+                    case default
+                        write(*, *) "WARNING: Unknown key:", trim(key)
+                  end select
+                end if
+            end do
+
+            if (ierr.ne.0) then
+              if (iamp0) then
+                write (*,*)
+                write (*,*) '### ERROR in READ_INPUT_FILE:'
+                write (*,*) '### Could not open the input file.'
+                write (*,*) 'File name: ',trim(infile)
+              end if
+              call endrun (.true.)
+            end if
+      !
+            ! [XX: namelist not supported in LFortran compiler]
+            ! read (8,topology)
+      !
+            ! [XX: namelist not supported in LFortran compiler]
+            ! read (8,inputvars)
+      !
+            close (8)
+      !
+            if (trim(fmt).ne.'h5') then
+              if (iamp0) then
+                write (*,*)
+                write (*,*) '### ERROR in READ_INPUT_FILE:'
+                write (*,*) '### "fmt" must be "h5".'
+                write (*,*) 'fmt: ',trim(fmt)
+              end if
+              call endrun (.true.)
+            end if
+      !
+      ! ****** Check if output names were overwritten.
+      ! ****** If not, set default names with format fmt.
+      !
+            if (trim(phifile).eq.'default') then
+              phifile='phi.'//trim(fmt)
+            end if
+            if (trim(br0file).eq.'default') then
+              br0file='br0.'//trim(fmt)
+            end if
+            if (trim(brfile).eq.'default') then
+              brfile='br.'//trim(fmt)
+            end if
+            if (trim(btfile).eq.'default') then
+              btfile='bt.'//trim(fmt)
+            end if
+            if (trim(bpfile).eq.'default') then
+              bpfile='bp.'//trim(fmt)
+            end if
+            if (trim(br_photo_file).eq.'default') then
+              br_photo_file='br_photo.'//trim(fmt)
+            end if
+            if (trim(br_photo_original_file).eq.'default') then
+              br_photo_original_file='br_photo_original.'//trim(fmt)
+            end if
+      !
+            nr_g=nr
+            nt_g=nt
+            np_g=np
+      !
+      ! ****** Check if the specified mesh dimensions are valid.
+      !
+            call check_mesh_dimensions (nr_g,nt_g,np_g)
+      !
+            nrm1_g=nr_g-1
+            ntm1_g=nt_g-1
+            npm1_g=np_g-1
+      !
 end subroutine
 !#######################################################################
 subroutine check_error_on_p0 (ierr0)
